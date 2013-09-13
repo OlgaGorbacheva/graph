@@ -10,23 +10,39 @@
 #include <memory>
 
 using namespace std;
-////////
+
 template<class T>
 class vertex
 {
     T value;
+public:
+
+    template<class TypeV, class TypeE> //что за хрень?????????
+    friend class graph;
+
+    vertex<T>(T _value): value(_value) {}
+    vertex<T>(vertex<T> const &_v): value(_v.value) {}
+    T & get() {return value;}
 };
 
 template<class TypeV, class TypeE>
 class graph
 {
+public:
+
+    typedef typename vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > >::iterator edges_iterator;
+    typedef typename list<pair<weak_ptr<vertex<TypeV> >, TypeE> >::iterator vertex_iterator;
+    typedef typename vector<shared_ptr<vertex<TypeV> > >::iterator existed_vertex_iterator;
+
 private:
     vector<shared_ptr<vertex<TypeV> > > ver;
     vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > > rList;
     vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > > tList;
+
+    edges_iterator r_check_existed_ver(shared_ptr<vertex<TypeV> > v);
+    edges_iterator t_check_existed_ver(shared_ptr<vertex<TypeV> > v);
+
 public:
-    typedef typename vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > >::iterator edges_iterator;
-    typedef typename list<pair<weak_ptr<vertex<TypeV> >, TypeE> >::iterator vertex_iterator;
 
     graph();
 
@@ -34,18 +50,20 @@ public:
     list<pair<weak_ptr<vertex<TypeV> >, TypeE> > getInEdges(shared_ptr<vertex<TypeV> > v); //список входящих ребер:
                                                                                           //указатель на вершину, вес ребра
     list<pair<weak_ptr<vertex<TypeV> >, TypeE> > getOutEdges(shared_ptr<vertex<TypeV> > v); //список выходящих ребер
-//    vector<DataV> getVertex();
-//    void InsertV(DataV _data);
-//    void InsertE(unsigned int v1, unsigned int v2, DataE _data);
 
-//    class iterator_dfs;
-//    class iterator_bfs;
+    vector<weak_ptr<vertex<TypeV> > > getVertex();
 
-//    template <class T, class U>
-//    friend istream& operator >> (istream &cin, graph<T, U>& _graph);
+    void InsertV(TypeV _data);
+    void InsertE(shared_ptr<vertex<TypeV> > v1, shared_ptr<vertex<TypeV> > v2, TypeE _data);
 
-//    template <class T, class U>
-//    friend ostream& operator << (ostream &cout, graph<T, U>& _graph);
+    class iterator_dfs;
+    class iterator_bfs;
+
+    template <class T, class U>
+    friend istream& operator >>(istream &cin, graph<T, U> &_graph);
+
+    template <class T, class U>
+    friend ostream& operator << (ostream &cout, graph<T, U> &_graph);
 
 //    iterator_dfs begin();
 //    iterator_dfs end();
