@@ -65,31 +65,31 @@ public:
     template <class T, class U>
     friend ostream& operator << (ostream &cout, graph<T, U> &_graph);
 
-//    iterator_dfs begin();
-//    iterator_dfs end();
+//    iterator_dfs begin_dfs();
+//    iterator_dfs end_dfs();
 //    iterator_bfs begin(int);
 //    iterator_bfs end(int);
-//};
+};
 
-//template<class DataV, class DataE>
-//class graph<DataV, DataE>::iterator_dfs
+//template<class TypeV, class TypeE>
+//class graph<TypeV, TypeE>::iterator_dfs
 //{
 //private:
 //    vector<char> color;
-//    typename vector<DataV>::iterator elem;
+//    typename vector<shared_ptr<vertex<TypeV> > >::iterator elem;
 //    stack<int> passed;
-//    graph *G;
+//    shared_ptr<graph<TypeV, TypeE> > G;
 //public:
-//    iterator_dfs(graph<DataV, DataE> *_G);
+//    iterator_dfs(graph<TypeV, TypeE> *_G);
 //    iterator_dfs(iterator_dfs const &itr);
 
 //    friend class graph;
 
-//    iterator_dfs& operator ++();
-//    DataV& operator *();
+//    iterator_dfs & operator ++();
+//    shared_ptr<vertex<TypeV> >  & operator *();
 //    bool operator ==(iterator_dfs const itr);
 //    bool operator !=(iterator_dfs const itr);
-};
+//};
 
 //template<class DataV, class DataE>
 //class graph<DataV, DataE>::iterator_bfs

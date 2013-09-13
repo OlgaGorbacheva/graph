@@ -146,19 +146,19 @@ void graph<TypeV, TypeE>::InsertE(shared_ptr<vertex<TypeV> > v1, shared_ptr<vert
     v2_ei->push_back(make_pair(static_cast<weak_ptr<vertex<TypeV> > >(v1), _data));
 }
 
-//template<class DataV,  class DataE>
-//typename graph<DataV, DataE>::iterator_dfs graph<DataV, DataE>::begin()
+//template<class TypeV,  class TypeE>
+//typename graph<TypeV, TypeE>::iterator_dfs graph<TypeV, TypeE>::begin_dfs()
 //{
 //    iterator_dfs itr(this);
 //    ++itr;
 //    return itr;
 //}
 
-//template<class DataV,  class DataE>
-//typename graph<DataV, DataE>::iterator_dfs graph<DataV, DataE>::end()
+//template<class TypeV,  class TypeE>
+//typename graph<TypeV, TypeE>::iterator_dfs graph<TypeV, TypeE>::end_dfs()
 //{
 //    iterator_dfs itr(this);
-//    itr.elem = Inf.end();
+//    itr.elem = ver.end();
 //    return itr;
 //}
 
