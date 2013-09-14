@@ -8,62 +8,67 @@
 #include <stack>
 #include <queue>
 #include <memory>
+#include <map>
 
-using namespace std;
+//using namespace std;
 
-template<class T>
+template<class V, class E>
 class vertex
 {
-    T value;
+private:
+    V value;                                                           //значение вершины
+    std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> > rList;  //прямой список смежности для вершины
+    std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> > tList;  //обратный список смежности для вершины
 public:
 
-    template<class TypeV, class TypeE> //что за хрень?????????
+    template<class T, class U>
     friend class graph;
 
-    vertex<T>(T _value): value(_value) {}
-    vertex<T>(vertex<T> const &_v): value(_v.value) {}
-    T & get() {return value;}
+    vertex<V, E>(V _value): value(_value) {}
+    vertex<V, E>(vertex<V, E> const &_v): value(_v.value) {}
+    V & get() {return value;}
 };
 
-template<class TypeV, class TypeE>
+template<class V, class E>
 class graph
 {
 public:
 
-    typedef typename vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > >::iterator edges_iterator;
-    typedef typename list<pair<weak_ptr<vertex<TypeV> >, TypeE> >::iterator vertex_iterator;
-    typedef typename vector<shared_ptr<vertex<TypeV> > >::iterator existed_vertex_iterator;
+    typedef typename std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> >::iterator edge_iterator;
+    typedef typename std::map<int, std::shared_ptr<vertex<V, E> > >::iterator vertex_iterator;
+//    typedef typename vector<shared_ptr<vertex<TypeV> > >::iterator existed_vertex_iterator;
 
 private:
-    vector<shared_ptr<vertex<TypeV> > > ver;
-    vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > > rList;
-    vector<list<pair<weak_ptr<vertex<TypeV> >, TypeE> > > tList;
+    std::map<int, std::shared_ptr<vertex<V, E> > > ver;  //список вершин с номерами, которыми вводим/выводим
 
-    edges_iterator r_check_existed_ver(shared_ptr<vertex<TypeV> > v);
-    edges_iterator t_check_existed_ver(shared_ptr<vertex<TypeV> > v);
+//    edges_iterator r_check_existed_ver(shared_ptr<vertex<TypeV> > v);
+//    edges_iterator t_check_existed_ver(shared_ptr<vertex<TypeV> > v);
 
 public:
 
+    template<class U, class T>
+    friend class vertex;
+
     graph();
 
-    graph<TypeV, TypeE> transpose();
-    list<pair<weak_ptr<vertex<TypeV> >, TypeE> > getInEdges(shared_ptr<vertex<TypeV> > v); //список входящих ребер:
-                                                                                          //указатель на вершину, вес ребра
-    list<pair<weak_ptr<vertex<TypeV> >, TypeE> > getOutEdges(shared_ptr<vertex<TypeV> > v); //список выходящих ребер
+    graph<V, E> transpose();
 
-    vector<weak_ptr<vertex<TypeV> > > getVertex();
+    std::list<std::pair<int, E> > getInEdges(int v); //список входящих ребер
+    std::list<std::pair<int, E> > getOutEdges(int v); //список выходящих ребер
 
-    void InsertV(TypeV _data);
-    void InsertE(shared_ptr<vertex<TypeV> > v1, shared_ptr<vertex<TypeV> > v2, TypeE _data);
+//    vector<weak_ptr<vertex<TypeV> > > getVertex();
 
-    class iterator_dfs;
-    class iterator_bfs;
+//    void InsertV(TypeV _data);
+//    void InsertE(shared_ptr<vertex<TypeV> > v1, shared_ptr<vertex<TypeV> > v2, TypeE _data);
 
-    template <class T, class U>
-    friend istream& operator >>(istream &cin, graph<T, U> &_graph);
+//    class iterator_dfs;
+//    class iterator_bfs;
 
-    template <class T, class U>
-    friend ostream& operator << (ostream &cout, graph<T, U> &_graph);
+//    template <class T, class U>
+//    friend istream& operator >>(istream &cin, graph<T, U> &_graph);
+
+//    template <class T, class U>
+//    friend ostream& operator << (ostream &cout, graph<T, U> &_graph);
 
 //    iterator_dfs begin_dfs();
 //    iterator_dfs end_dfs();
