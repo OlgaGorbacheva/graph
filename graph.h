@@ -32,10 +32,6 @@ public:
 template<class V, class E>
 class graph
 {
-public:
-
-    typedef typename std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> >::iterator edge_iterator;
-    typedef typename std::map<int, std::shared_ptr<vertex<V, E> > >::iterator vertex_iterator;
 //    typedef typename vector<shared_ptr<vertex<TypeV> > >::iterator existed_vertex_iterator;
 
 private:
@@ -49,12 +45,23 @@ public:
     template<class U, class T>
     friend class vertex;
 
+    typedef typename std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> >::iterator edge_iterator;
+    typedef typename std::map<int, std::shared_ptr<vertex<V, E> > >::iterator vertex_iterator;
+
     graph();
 
     graph<V, E> transpose();
 
     std::list<std::pair<int, E> > getInEdges(int v); //список входящих ребер
     std::list<std::pair<int, E> > getOutEdges(int v); //список выходящих ребер
+    std::list<std::pair<int, V> > getAccessVertexes(int v); //список достижимых ребер
+    std::list<std::pair<int, V> > getPreviousVertexes(int v); //список предыдущих вершин
+
+    void insertVertex(int v, V _value);
+    void eraseVertex(int v);
+    void insertEdge(int v1, int v2, E _value);
+    void eraseEdge(int v1, int v2);
+
 
 //    vector<weak_ptr<vertex<TypeV> > > getVertex();
 

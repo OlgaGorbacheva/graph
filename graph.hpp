@@ -32,7 +32,6 @@ std::list<std::pair<int, E> > graph<V, E>::getInEdges(int v)
     return edges;
 }
 
-
 template<class V,  class E>
 std::list<std::pair<int, E> > graph<V, E>::getOutEdges(int v)
 {
@@ -46,10 +45,90 @@ std::list<std::pair<int, E> > graph<V, E>::getOutEdges(int v)
     return edges;
 }
 
+template<class V,  class E>
+std::list<std::pair<int, V> > graph<V, E>::getAccessVertexes(int v)
+{
+    vertex_iterator itr = ver.find(v);
+    if (itr == ver.end())
+        throw "Vertex doesn't exist";
+    std::list<std::pair<int, E> > vertexes;
+    edge_iterator ed_itr = ((itr->second)->rList).begin(), ed_end = ((itr->second)->rList).end();
+    for (;ed_itr != ed_end; ed_itr++){
+        std::shared_ptr<vertex<V, E> > ver_point = ((ed_itr->second)->first).lock();
+        if (ver_point == NULL){
+            (itr->second)->rList.erase(ed_itr);
+            continue;
+        }
+        vertexes.push_back(std::make_pair(ed_itr->first, ver_point->value));
+    }
+    return vertexes;
+}
+
+template<class V,  class E>
+std::list<std::pair<int, V> > graph<V, E>::getPreviousVertexes(int v)
+{
+    vertex_iterator itr = ver.find(v);
+    if (itr == ver.end())
+        throw "Vertex doesn't exist";
+    std::list<std::pair<int, E> > vertexes;
+    edge_iterator ed_itr = ((itr->second)->tList).begin(), ed_end = ((itr->second)->tList).end();
+    for (;ed_itr != ed_end; ed_itr++){
+        std::shared_ptr<vertex<V, E> > ver_point = ((ed_itr->second)->first).lock();
+        if (ver_point == NULL){
+            (itr->second)->tList.erase(ed_itr);
+            continue;
+        }
+        vertexes.push_back(std::make_pair(ed_itr->first, ver_point->value));
+    }
+    return vertexes;
+}
+
+template<class V,  class E>
+void graph<V, E>::insertVertex(int v, V _value)
+{
+    if (ver.find(v) != ver.end())
+        throw "Vertex has already existed";
+    shared_ptr<vertex<V, E> > new_ver(new vertex<V, E>(_value));
+    ver[v] = new_ver;
+}
+
+template<class V,  class E>
+void graph<V, E>::eraseVertex(int v)
+{
+    if (ver.find(v) == ver.end())
+        throw "Vertex doesn't' exist";
+    ver.erase(v);
+}
+
+template<class V,  class E>
+void graph<V, E>::insertEdge(int v1, int v2, E _value)
+{
+    vertex_iterator itr1, itr2;
+    if (((itr1 = ver.find(v1)) == ver.end())
+            || ((itr2 = ver.find(v2)) == ver.end()))
+        throw "Vertex doesn't' exist";
+    if (((itr1->second)->rList.find(v2)) != (itr1->second)->rList.end())
+        throw "Edge has already existed";
+    (itr1->second)->rList[v2] = std::make_pair(static_cast<std::weak_ptr<vertex<V, E> > >(itr2->second), _value);
+    (itr2->second)->rList[v1] = std::make_pair(static_cast<std::weak_ptr<vertex<V, E> > >(itr1->second), _value);
+}
+
+template<class V,  class E>
+void graph<V, E>::eraseEdge(int v1, int v2)
+{
+    vertex_iterator itr1, itr2;
+    if (((itr1 = ver.find(v1)) == ver.end())
+            || ((itr2 = ver.find(v2)) == ver.end()))
+        throw "Vertex doesn't' exist";
+    if (((itr1->second)->rList.find(v2)) == (itr1->second)->rList.end())
+        throw "Edge doesn't exist";
+    (itr1->second)->rList.erase(v2);
+    (itr2->second)->rList.erase(v2);
+}
 
 //template<class TypeV,  class TypeE>
 //typename graph<TypeV, TypeE>::edges_iterator graph<TypeV, TypeE>::r_check_existed_ver(shared_ptr<vertex<TypeV> > v)
-//{
+//{111
 //    edges_iterator i;
 //    for (i = rList.begin(); i != rList.end(); i++){
 //        shared_ptr<vertex<TypeV> > current_vertex;
