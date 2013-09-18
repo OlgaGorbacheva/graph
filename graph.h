@@ -35,7 +35,7 @@ class graph
 //    typedef typename vector<shared_ptr<vertex<TypeV> > >::iterator existed_vertex_iterator;
 
 private:
-    std::map<int, std::shared_ptr<vertex<V, E> > > ver;  //список вершин с номерами, которыми вводим/выводим
+    std::map<int, std::shared_ptr<vertex<V, E> > > ver;  //список вершин с номерами, c которыми вводим/выводим
 
 //    edges_iterator r_check_existed_ver(shared_ptr<vertex<TypeV> > v);
 //    edges_iterator t_check_existed_ver(shared_ptr<vertex<TypeV> > v);
@@ -62,8 +62,11 @@ public:
     void insertEdge(int v1, int v2, E _value);
     void eraseEdge(int v1, int v2);
 
+    template <class T, class U>
+    friend std::istream& operator >>(std::istream &cin, graph<T, U> &_graph);
 
-//    vector<weak_ptr<vertex<TypeV> > > getVertex();
+    template <class T, class U>
+    friend std::ostream& operator << (std::ostream &cout, graph<T, U> &_graph);
 
 //    void InsertV(TypeV _data);
 //    void InsertE(shared_ptr<vertex<TypeV> > v1, shared_ptr<vertex<TypeV> > v2, TypeE _data);

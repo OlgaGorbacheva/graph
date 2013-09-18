@@ -1,6 +1,5 @@
 #include "graph.h"
 
-using namespace std;
 
 template<class TypeV,  class TypeE>
 graph<TypeV, TypeE>::graph()
@@ -12,7 +11,7 @@ graph<V, E> graph<V, E>::transpose()
     graph result;
     for (vertex_iterator itr = ver.begin(), end = ver.end(); itr != end; itr++){
         std::shared_ptr<vertex<V, E> > _new (new vertex<V, E>((itr->second)->value));
-        _new->rList = (itr->second)->tList;
+        _new->rList = (itr->second)->tList; //itr->second - это shared_ptr на вершину графа, на кот в map вершин указывает itr
         _new->tList = (itr->second)->rList;
         result.ver[itr->first] = _new;
     }
@@ -26,9 +25,14 @@ std::list<std::pair<int, E> > graph<V, E>::getInEdges(int v)
     if (itr == ver.end())
         throw "Vertex doesn't exist";
     std::list<std::pair<int, E> > edges;
-    edge_iterator ed_itr = ((itr->second)->tList).begin(), ed_end = ((itr->second)->tList).end();
-    for (;ed_itr != ed_end; ed_itr++)
-        edges.push_back(std::make_pair(itr->first, (itr->second)->second));
+    edge_iterator ed_itr = ((itr->second)->tList).begin(), ed_end = ((itr->second)->tList).end(); // itr->second - указатель на вершину v
+    for (;ed_itr != ed_end; ed_itr++){
+        if ((itr->second)->first.expired()){ //itr->second)->first - указатель на вершину, с которой текущая имеет ребро
+            (itr->second)->tList.erase(ed_itr); //проверка валидности weak_ptr и, при необходимости, удаление лишней вершины
+            continue;
+        }
+        edges.push_back(std::make_pair(itr->first, (itr->second)->second)); //itr->first - номер вершины, (itr->second)->second - вес ребра
+    }
     return edges;
 }
 
@@ -39,9 +43,14 @@ std::list<std::pair<int, E> > graph<V, E>::getOutEdges(int v)
     if (itr == ver.end())
         throw "Vertex doesn't exist";
     std::list<std::pair<int, E> > edges;
-    edge_iterator ed_itr = ((itr->second)->rList).begin(), ed_end = ((itr->second)->rList).end();
-    for (;ed_itr != ed_end; ed_itr++)
+    edge_iterator ed_itr = ((itr->second)->rList).begin(), ed_end = ((itr->second)->rList).end(); //itr->second - указатель на вершину v
+    for (;ed_itr != ed_end; ed_itr++){
+        if ((itr->second)->first.expired()){ //itr->second)->first - указатель на вершину, с которой текущая имеет ребро
+            (itr->second)->tList.erase(ed_itr); //проверка валидности weak_ptr и, при необходимости, удаление лишней вершины
+            continue;
+        }
         edges.push_back(std::make_pair(itr->first, (itr->second)->second));
+    }
     return edges;
 }
 
@@ -52,14 +61,14 @@ std::list<std::pair<int, V> > graph<V, E>::getAccessVertexes(int v)
     if (itr == ver.end())
         throw "Vertex doesn't exist";
     std::list<std::pair<int, E> > vertexes;
-    edge_iterator ed_itr = ((itr->second)->rList).begin(), ed_end = ((itr->second)->rList).end();
+    edge_iterator ed_itr = ((itr->second)->rList).begin(), ed_end = ((itr->second)->rList).end(); //itr->second - указатель на вершину v
     for (;ed_itr != ed_end; ed_itr++){
-        std::shared_ptr<vertex<V, E> > ver_point = ((ed_itr->second)->first).lock();
-        if (ver_point == NULL){
-            (itr->second)->rList.erase(ed_itr);
+        if ((itr->second)->first.expired()){ //itr->second)->first - указатель на вершину, с которой текущая имеет ребро
+            (itr->second)->tList.erase(ed_itr); //проверка валидности weak_ptr и, при необходимости, удаление лишней вершины
             continue;
         }
-        vertexes.push_back(std::make_pair(ed_itr->first, ver_point->value));
+        std::shared_ptr<vertex<V, E> > ver_point = ((ed_itr->second)->first).lock(); //указатель на вершину, связанную с v выходящим из в ребром
+        vertexes.push_back(std::make_pair(ed_itr->first, ver_point->value)); //ed_itr->first - n вершины,
     }
     return vertexes;
 }
@@ -73,11 +82,11 @@ std::list<std::pair<int, V> > graph<V, E>::getPreviousVertexes(int v)
     std::list<std::pair<int, E> > vertexes;
     edge_iterator ed_itr = ((itr->second)->tList).begin(), ed_end = ((itr->second)->tList).end();
     for (;ed_itr != ed_end; ed_itr++){
-        std::shared_ptr<vertex<V, E> > ver_point = ((ed_itr->second)->first).lock();
-        if (ver_point == NULL){
-            (itr->second)->tList.erase(ed_itr);
+        if ((itr->second)->first.expired()){ //itr->second)->first - указатель на вершину, с которой текущая имеет ребро
+            (itr->second)->tList.erase(ed_itr); //проверка валидности weak_ptr и, при необходимости, удаление лишней вершины
             continue;
         }
+        std::shared_ptr<vertex<V, E> > ver_point = ((ed_itr->second)->first).lock(); // указатель на вершину, из которой можно прийти в v
         vertexes.push_back(std::make_pair(ed_itr->first, ver_point->value));
     }
     return vertexes;
@@ -88,7 +97,7 @@ void graph<V, E>::insertVertex(int v, V _value)
 {
     if (ver.find(v) != ver.end())
         throw "Vertex has already existed";
-    shared_ptr<vertex<V, E> > new_ver(new vertex<V, E>(_value));
+    std::shared_ptr<vertex<V, E> > new_ver(new vertex<V, E>(_value));
     ver[v] = new_ver;
 }
 
@@ -107,7 +116,7 @@ void graph<V, E>::insertEdge(int v1, int v2, E _value)
     if (((itr1 = ver.find(v1)) == ver.end())
             || ((itr2 = ver.find(v2)) == ver.end()))
         throw "Vertex doesn't' exist";
-    if (((itr1->second)->rList.find(v2)) != (itr1->second)->rList.end())
+    if ((((itr1->second)->rList.find(v2)) != (itr1->second)->rList.end()) && !((itr1->second)->rList.find(v2)).expired())
         throw "Edge has already existed";
     (itr1->second)->rList[v2] = std::make_pair(static_cast<std::weak_ptr<vertex<V, E> > >(itr2->second), _value);
     (itr2->second)->rList[v1] = std::make_pair(static_cast<std::weak_ptr<vertex<V, E> > >(itr1->second), _value);
@@ -120,11 +129,67 @@ void graph<V, E>::eraseEdge(int v1, int v2)
     if (((itr1 = ver.find(v1)) == ver.end())
             || ((itr2 = ver.find(v2)) == ver.end()))
         throw "Vertex doesn't' exist";
-    if (((itr1->second)->rList.find(v2)) == (itr1->second)->rList.end())
+    if (((itr1->second)->rList.find(v2)) == (itr1->second)->rList.end() || ((itr1->second)->rList.find(v2)).expired())
         throw "Edge doesn't exist";
     (itr1->second)->rList.erase(v2);
     (itr2->second)->rList.erase(v2);
 }
+
+template<class V,  class E>
+std::istream& operator >> (std::istream &cin, graph<V, E>  &_graph)
+{
+    _graph.ver.clear();
+    unsigned int n;
+    cin >> n; //количество вершин
+    for (unsigned int i = 0; i < n; i++){
+        V _data;
+        int num;
+        cin >> num;
+        cin >> _data;
+        try{
+            _graph.insertVertex(num, _data);
+        }
+        catch (char *s){
+            std::cerr << s << std::endl;
+        }
+    }
+    for (unsigned int i = 0; i < n; i++){
+        int out; // из какой вершины выходят ребра
+        unsigned int m;
+        cin >> out;
+        cin >> m;
+        for (unsigned int j = 0; j < m; j++){
+            E _data;
+            int in;
+            cin >> in >> _data;
+            try{
+                _graph.insertEdge(out, in, _data);
+            }
+            catch (char *s){
+                std::cerr << s << std::endl;
+            }
+        }
+    }
+    return cin;
+}
+
+template<class V,  class E>
+std::ostream& operator << (std::ostream &cout, graph<V, E> &_graph)
+{
+    cout << _graph.ver.size() << std::endl; //количество вершин
+    typename graph<V, E>::vertex_iterator itr = _graph.ver.begin(), end = _graph.ver.end();
+    for (; itr != end; itr++)
+        cout << itr->first << ' ' << ((itr->second)->value) << std::endl; //itr->first - номер вершины,
+    for (itr = _graph.ver.begin(); itr != end; itr++){
+        cout << std::endl << itr->first << ' ' << (itr->second)->rList.size() << std::endl; //выводим номер вершины и кол-во связвнных
+        typename graph<V, E>::edge_iterator e_itr = (itr->second)->rList.begin(), e_end = (itr->second)->rList.end();
+        for (;e_itr != e_end; e_itr++)
+            cout << e_itr->first << ' ' << e_itr->second->second; // вывод номера вершины и веса ребра
+    }
+    return cout;
+}
+
+
 
 //template<class TypeV,  class TypeE>
 //typename graph<TypeV, TypeE>::edges_iterator graph<TypeV, TypeE>::r_check_existed_ver(shared_ptr<vertex<TypeV> > v)
