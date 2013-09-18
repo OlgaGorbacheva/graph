@@ -13,6 +13,9 @@
 //using namespace std;
 
 template<class V, class E>
+class graph;
+
+template<class V, class E>
 class vertex
 {
 private:
@@ -21,12 +24,13 @@ private:
     std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> > tList;  //обратный список смежности для вершины
 public:
 
-    template<class T, class U>
-    friend class graph;
+//    template<class T, class U>
+    friend class graph<V, E>;
 
     vertex<V, E>(V _value): value(_value) {}
-    vertex<V, E>(vertex<V, E> const &_v): value(_v.value) {}
-    V & get() {return value;}
+    vertex<V, E>(vertex<V, E> const &_v): value(_v.value), rList(_v.rList), tList(_v.tList) {}
+    V get(){return value;}
+    int getNum(){return rList.size();}
 };
 
 template<class V, class E>
@@ -41,9 +45,7 @@ private:
 //    edges_iterator t_check_existed_ver(shared_ptr<vertex<TypeV> > v);
 
 public:
-
-    template<class U, class T>
-    friend class vertex;
+    friend class vertex<V, E>;
 
     typedef typename std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> >::iterator edge_iterator;
     typedef typename std::map<int, std::shared_ptr<vertex<V, E> > >::iterator vertex_iterator;
