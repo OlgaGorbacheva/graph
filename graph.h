@@ -36,13 +36,8 @@ public:
 template<class V, class E>
 class graph
 {
-//    typedef typename vector<shared_ptr<vertex<TypeV> > >::iterator existed_vertex_iterator;
-
 private:
     std::map<int, std::shared_ptr<vertex<V, E> > > ver;  //список вершин с номерами, c которыми вводим/выводим
-
-//    edges_iterator r_check_existed_ver(shared_ptr<vertex<TypeV> > v);
-//    edges_iterator t_check_existed_ver(shared_ptr<vertex<TypeV> > v);
 
 public:
     friend class vertex<V, E>;
@@ -70,17 +65,8 @@ public:
     template <class T, class U>
     friend std::ostream& operator << (std::ostream &cout, graph<T, U> &_graph);
 
-//    void InsertV(TypeV _data);
-//    void InsertE(shared_ptr<vertex<TypeV> > v1, shared_ptr<vertex<TypeV> > v2, TypeE _data);
-
 //    class iterator_dfs;
 //    class iterator_bfs;
-
-//    template <class T, class U>
-//    friend istream& operator >>(istream &cin, graph<T, U> &_graph);
-
-//    template <class T, class U>
-//    friend ostream& operator << (ostream &cout, graph<T, U> &_graph);
 
 //    iterator_dfs begin_dfs();
 //    iterator_dfs end_dfs();
