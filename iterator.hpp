@@ -2,21 +2,26 @@
 #define ITERATOR_H
 #include "graph.h"
 
-//template<class TypeV, class TypeE>
-//graph<TypeV, TypeE>::iterator_dfs::iterator_dfs(graph<TypeV, TypeE> *_G):G(_G)
-//{
-//    color.resize(G->ver.size(), 0);
+//template<class V, class E>
+//graph<V, E>::iterator_dfs::iterator_dfs(graph<V, E> &_G):G(_G)
+//{ // заполнить color 0
 //}
 
-//template<class  TypeV, class TypeE>
-//typename graph<TypeV, TypeE>::iterator_dfs & graph<TypeV, TypeE>::iterator_dfs::operator ++()
+//template<class V, class E>
+//graph<V, E>::iterator_dfs::iterator_dfs(graph<V, E>::iterator_dfs const &itr):color(itr.color),
+//    elem(itr.elem), passed(itr.passed), G(itr.G)
+//{}
+
+//template<class  V, class E>
+//typename graph<V, E>::iterator_dfs & graph<V, E>::iterator_dfs::operator ++()
 //{
 //    if (passed.size() == 0){ //стек dfs пуст
-//        typename vector<char>::iterator itr = color.begin(), end = color.end(); //пробежимся по вершинам и их цветам
-//        for (int i = 0; itr != end; i++, itr++)
-//            if (*itr == 0){ //если белая вершина найдена - стек не пуст, можно выходить из цикла
-//                passed.push(i);
-//                *itr = 1;
+//        typename std::unordered_map<int, char>::iterator itr = color.begin(), end = color.end(); //пробежимся по вершинам и их цветам
+//        for (; itr != end; itr++)
+//            if (itr->second == 0){ //если белая вершина найдена - стек не пуст, можно выходить из цикла
+//                passed.push(itr->first);
+//                itr->second = 1;
+//                elem = G.ver.find(itr->first);
 //                break;
 //            }
 //        if (itr == end){ //если нет, конец графа
@@ -27,10 +32,11 @@
 //    bool flag = true;
 //    while (flag){
 //        flag = false;
-//        typename list<pair<weak_ptr<vertex<TypeV> >, TypeE> >::iterator //пробежимся по списку смежности для поиска непосещенных вершин
-//                itr = ++((G->r_check_existed_ver(G->ver[passed.top()]))->begin()),
-//                end = (G->r_check_existed_ver(G->ver[passed.top()]))->end();
+//        std::list<std::pair<int, V> > l = G.getAccessVertexes(passed.top()); //пробежимся по списку смежности для поиска непосещенных вершин
+//        auto itr = l.begin(), end = l.end();
 //        for(; itr != end && !flag; itr++){
+//            if ()
+//                ;
 //            typename vector<shared_ptr<vertex<TypeV> > >::iterator cur = find(G->ver.begin(), G->ver.end(), (itr->first).lock()),
 //                    beg = G->ver.begin();
 //            if (color[cur - beg] == 0){

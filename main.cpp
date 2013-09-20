@@ -16,11 +16,11 @@ int main()
         cerr << "Input error" << endl;
         return 0;
     }
-    graph<int, int> G;
+//    graph<int, int> G;
 //    G.insertVertex(0, 1);
 //    G.insertVertex(1, 2);
 //    G.insertEdge(0, 1, 5);
-    fin >> G;
+//    fin >> G;
 //    try{
 //        fin >> G;
 //    }
@@ -30,16 +30,16 @@ int main()
 //    graph<int, int> V = G.transpose();
 //    fout << G << endl << endl << endl << endl << V;
 //    fout << G << endl;
-    G.eraseEdge(1, 3);
-    G.insertEdge(3, 4, 5);
-    G.eraseVertex(6);
-    G.insertVertex(7, 0);
-    G.insertEdge(4, 4, 0);
-    G.insertEdge(4, 7, 3);
-    fout << G;
-    list<pair<int, int> > l = (G.transpose()).getPreviousVertexes(4);
-    for (auto itr = l.begin(); itr!= l.end(); itr++)
-        cout << itr->first << ' ' << itr->second << endl;
+//    G.eraseEdge(1, 3);
+//    G.insertEdge(3, 4, 5);
+//    G.eraseVertex(6);
+//    G.insertVertex(7, 0);
+//    G.insertEdge(4, 4, 0);
+//    G.insertEdge(4, 7, 3);
+//    fout << G;
+//    list<pair<int, int> > l = (G.transpose()).getPreviousVertexes(4);
+//    for (auto itr = l.begin(); itr!= l.end(); itr++)
+//        cout << itr->first << ' ' << itr->second << endl;
     ////    graph<int, int>::iterator_bfs itr = G.begin(5), end = G.end(5);
 ////    for (; itr != end; ++itr)
 ////        cout << *itr;
