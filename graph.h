@@ -7,66 +7,29 @@
 #include <stack>
 #include <queue>
 
-namespace my {
-template<class I, class V, class E>
-class vertex;
-
-template<class I, class V, class E>
-class edge;
+namespace my{
 
 template<class I, class V, class E>
 class graph;
+
 }
-
-template<class I, class V, class E>
-class my::vertex
-{
-private:
-    I id;
-    V value;
-    std::unordered_map<I, std::weak_ptr<my::edge<I, V, E> > > rList;
-    std::unordered_map<I, std::weak_ptr<my::edge<I, V, E> > > tList;
-public:
-    vertex(I &_id);
-    vertex(I &_id, V &_value);
-    vertex(I &_id, V &&_value) noexcept;
-    vertex(I &&_id, V &_value) noexcept;
-    vertex(I &&_id, V &&_value) noexcept;
-    vertex(vertex<I, V, E> &_ver) = delete;
-    vertex(vertex<I, V, E> &&_ver) noexcept;
-
-    I getId();
-    V getValue();
-};
-
-template<class I, class V, class E>
-class my::edge
-{
-private:
-    E value;
-    std::pair<std::weak_ptr<my::vertex<I, V, E> >, std::weak_ptr<my::vertex<I, V, E> > > vertexes;
-public:
-    edge(std::weak_ptr<my::vertex<I, V, E> > v1, std::weak_ptr<my::vertex<I, V, E> > v2);
-    edge(std::weak_ptr<my::vertex<I, V, E> > v1, std::weak_ptr<my::vertex<I, V, E> > v2, E _value);
-
-    E getValue();
-    std::pair<I, I> getVertexes();
-    std::pair<std::weak_ptr<my::vertex<I, V, E> >, std::weak_ptr<my::vertex<I, V, E> > > getVertexPointers();
-};
 
 template<class I, class V, class E>
 class my::graph
 {
+public:
+    class vertex;
+    class edge;
 private:
-    std::unordered_map<I, std::shared_ptr<my::vertex<I, V, E> > > vertexes;
-    std::vector<std::shared_ptr<my::edge<I, V, E> > > edges;
+    std::unordered_map<I, std::shared_ptr<vertex> > vertexes;
+    std::vector<std::shared_ptr<edge> > edges;
 public:
     graph();
     graph(graph<I, V, E> &_G);
     graph(graph<I, V, E> &&_G) noexcept;
 
-    typedef typename std::unordered_map<I, std::shared_ptr<my::vertex<I, V, E> > >::iterator direct_vertex_iterator;
-    typedef typename std::vector<std::shared_ptr<my::edge<I, V, E> > >::iterator direct_edge_iterator;
+    typedef typename std::unordered_map<I, std::shared_ptr<vertex> >::iterator direct_vertex_iterator;
+    typedef typename std::vector<std::shared_ptr<edge> >::iterator direct_edge_iterator;
 
     direct_vertex_iterator insertVertex(I id, V _value);
     direct_edge_iterator insertEdge(I id_1, I id_2, E _value);
@@ -74,6 +37,8 @@ public:
     void eraseVertex(I id);
     void eraseEdge(I id_1, I id_2);
     void eraseVertex(direct_vertex_iterator);
+
+    graph<I, V, E> transpose();
 
     std::vector<std::pair<I, E> > getOutEdges(I id);
     std::vector<std::pair<I, E> > getInEdges(I id);
@@ -96,6 +61,43 @@ public:
 };
 
 template<class I, class V, class E>
+class my::graph<I, V, E>::vertex
+{
+private:
+    I id;
+    V value;
+    std::unordered_map<I, std::weak_ptr<my::graph<I, V, E>::edge> > rList;
+    std::unordered_map<I, std::weak_ptr<my::graph<I, V, E>::edge> > tList;
+public:
+    vertex(I &_id);
+    vertex(I &_id, V &_value);
+    vertex(I &_id, V &&_value) noexcept;
+    vertex(I &&_id, V &_value) noexcept;
+    vertex(I &&_id, V &&_value) noexcept;
+    vertex(my::graph<I, V, E>::vertex &_ver) = delete;
+    vertex(my::graph<I, V, E>::vertex &&_ver) noexcept;
+
+    I getId();
+    V getValue();
+};
+
+template<class I, class V, class E>
+class my::graph<I, V, E>::edge
+{
+private:
+    E value;
+    std::pair<std::weak_ptr<my::graph<I, V, E>::vertex>, std::weak_ptr<my::graph<I, V, E>::vertex> > vertexes;
+public:
+    edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2);
+    edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &_value);
+    edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &&_value);
+
+    E getValue();
+    std::pair<I, I> getVertexes();
+    std::pair<std::weak_ptr<my::graph<I, V, E>::vertex>, std::weak_ptr<my::graph<I, V, E>::vertex> > getVertexPointers();
+};
+
+template<class I, class V, class E>
 class my::graph<I, V, E>::iterator_dfs
 {
 private:
@@ -110,14 +112,16 @@ public:
     iterator_dfs(my::graph<I, V, E>::iterator_dfs &_itr);
     iterator_dfs(my::graph<I, V, E>::iterator_dfs &&_itr) noexcept;
 
-    my::vertex<I, V, E> & operator* ();
-    my::vertex<I, V, E> & operator-> ();
+    my::graph<I, V, E>::vertex & operator *();
+    my::graph<I, V, E>::vertex & operator ->();
 
     iterator_dfs & operator++();
     iterator_dfs operator ++(int);
 
     bool operator ==(iterator_dfs _itr);
     bool operator !=(iterator_dfs _itr);
+
+    int getColor();
 };
 
 template<class I, class V, class E>
@@ -135,14 +139,16 @@ public:
     iterator_bfs(my::graph<I, V, E>::iterator_bfs &_itr);
     iterator_bfs(my::graph<I, V, E>::iterator_bfs &&_itr) noexcept;
 
-    my::vertex<I, V, E> & operator* ();
-    my::vertex<I, V, E> & operator-> ();
+    my::graph<I, V, E>::vertex & operator *();
+    my::graph<I, V, E>::vertex & operator ->();
 
     iterator_bfs & operator++();
     iterator_bfs operator ++(int);
 
     bool operator ==(iterator_bfs _itr);
     bool operator !=(iterator_bfs _itr);
+
+    int getColor();
 };
 
 //#include <list>

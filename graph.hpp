@@ -1,10 +1,28 @@
 #include "graph.h"
 
 
-//template<class V,  class E>
-//graph<V, E>::graph()
-//{ }
+template<class I, class V, class E>
+my::graph<I, V, E>::graph()
+{ }
 
+//template<class I, class V, class E>
+
+
+
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
 //template<class V,  class E>
 //graph<V, E> graph<V, E>::transpose()
 //{

@@ -1,23 +1,27 @@
 #include "graph.h"
 
 template<class I, class V, class E>
-my::edge<I, V, E>::edge(std::weak_ptr<my::vertex<I, V, E> > v1, std::weak_ptr<my::vertex<I, V, E> > v2):
+my::graph<I, V, E>::edge::edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1,
+                                        std::weak_ptr<my::graph<I, V, E>::vertex> v2):
     value(), vertexes(make_pair(v1, v2))
 { }
 
 template<class I, class V, class E>
-my::edge<I, V, E>::edge(std::weak_ptr<my::vertex<I, V, E> > v1, std::weak_ptr<my::vertex<I, V, E> > v2, E _value):
+my::graph<I, V, E>::edge::edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1,
+                               std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &_value):
     value(_value), vertexes(make_pair(v1, v2))
 { }
 
+//добавить с move
+
 template<class I, class V, class E>
-E my::edge<I, V, E>::getValue()
+E my::graph<I, V, E>::edge::getValue()
 {
     return value;
 }
 
 template<class I, class V, class E>
-std::pair<I, I> my::edge<I, V, E>::getVertexes()
+std::pair<I, I> my::graph<I, V, E>::edge::getVertexes()
 {
     if (!vertexes.first.expired() && !vertexes.second.expired())
         return std::make_pair(vertexes.first.lock()->getId(), vertexes.second.lock()->getId());
@@ -25,7 +29,8 @@ std::pair<I, I> my::edge<I, V, E>::getVertexes()
 }
 
 template<class I, class V, class E>
-std::pair<std::weak_ptr<my::vertex<I, V, E> >, std::weak_ptr<my::vertex<I, V, E> > > my::edge<I, V, E>::getVertexPointers()
+std::pair<std::weak_ptr<typename my::graph<I, V, E>::vertex>, std::weak_ptr<typename my::graph<I, V, E>::vertex> >
+            my::graph<I, V, E>::edge::getVertexPointers()
 {
     if (!vertexes.first.expired() && !vertexes.second.expired())
         return vertexes;
