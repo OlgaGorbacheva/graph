@@ -24,12 +24,14 @@ class my::vertex
 private:
     I id;
     V value;
-    std::unordered_map<int, std::weak_ptr<my::edge<I, V, E> > > rList;
-    std::unordered_map<int, std::weak_ptr<my::edge<I, V, E> > > tList;
+    std::unordered_map<I, std::weak_ptr<my::edge<I, V, E> > > rList;
+    std::unordered_map<I, std::weak_ptr<my::edge<I, V, E> > > tList;
 public:
     vertex(I &_id);
     vertex(I &_id, V &_value);
-    vertex(I &_id, V &&_value);
+    vertex(I &_id, V &&_value) noexcept;
+    vertex(I &&_id, V &_value) noexcept;
+    vertex(I &&_id, V &&_value) noexcept;
     vertex(vertex<I, V, E> &_ver) = delete;
     vertex(vertex<I, V, E> &&_ver) noexcept;
 
@@ -93,20 +95,20 @@ public:
     iterator_bfs end_bfs();
 };
 
-template<class I, class E, class V>
-class my::graph<I, E, V>::iterator_dfs
+template<class I, class V, class E>
+class my::graph<I, V, E>::iterator_dfs
 {
 private:
     std::unordered_map<I, int> color;
     std::stack<I> passed;
-    my::graph<I, E, V>::direct_vertex_iterator itr;
-    my::graph<I, E, V> &G;
+    my::graph<I, V, E>::direct_vertex_iterator itr;
+    my::graph<I, V, E> &G;
 public:
     friend class graph;
 
-    iterator_dfs(my::graph<I, E, V> &_G);
-    iterator_dfs(my::graph<I, E, V>::iterator_dfs &_itr);
-    iterator_dfs(my::graph<I, E, V>::iterator_dfs &&_itr) noexcept;
+    iterator_dfs(my::graph<I, V, E> &_G);
+    iterator_dfs(my::graph<I, V, E>::iterator_dfs &_itr);
+    iterator_dfs(my::graph<I, V, E>::iterator_dfs &&_itr) noexcept;
 
     my::vertex<I, V, E> & operator* ();
     my::vertex<I, V, E> & operator-> ();
@@ -118,20 +120,20 @@ public:
     bool operator !=(iterator_dfs _itr);
 };
 
-template<class I, class E, class V>
-class my::graph<I, E, V>::iterator_bfs
+template<class I, class V, class E>
+class my::graph<I, V, E>::iterator_bfs
 {
 private:
     std::unordered_map<I, int> color;
     std::queue<I> passed;
-    my::graph<I, E, V>::direct_vertex_iterator itr;
-    my::graph<I, E, V> &G;
+    my::graph<I, V, E>::direct_vertex_iterator itr;
+    my::graph<I, V, E> &G;
 public:
     friend class graph;
 
-    iterator_bfs(my::graph<I, E, V> &_G);
-    iterator_bfs(my::graph<I, E, V>::iterator_bfs &_itr);
-    iterator_bfs(my::graph<I, E, V>::iterator_bfs &&_itr) noexcept;
+    iterator_bfs(my::graph<I, V, E> &_G);
+    iterator_bfs(my::graph<I, V, E>::iterator_bfs &_itr);
+    iterator_bfs(my::graph<I, V, E>::iterator_bfs &&_itr) noexcept;
 
     my::vertex<I, V, E> & operator* ();
     my::vertex<I, V, E> & operator-> ();
@@ -258,5 +260,8 @@ public:
 //};
 
 #include "graph.hpp"
+#include "edge.hpp"
+#include "vertex.hpp"
+
 #include "iterator.hpp"
 #endif // GRAPH_H
