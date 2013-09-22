@@ -5,15 +5,64 @@ template<class I, class V, class E>
 my::graph<I, V, E>::graph()
 { }
 
-//template<class I, class V, class E>
+template<class I, class V, class E>
+typename my::graph<I, V, E>::direct_vertex_iterator
+            my::graph<I, V, E>::insertVertex(I _id, V _value)
+{
+    if (vertexes.find(_id) != vertexes.end())
+        throw "Vertex has already existed";
+    return vertexes.insert(std::make_pair(_id,
+            static_cast<std::shared_ptr<vertex> > (new vertex(_id, _value)))).first;
+}
 
+template<class I, class V, class E>
+void my::graph<I, V, E>::eraseVertex(I _id)
+{
+    direct_vertex_iterator itr;
+    if ((itr = vertexes.find(_id)) == vertexes.end())
+        throw "Vertex doesn't exist";
+    vertexes.erase(itr);
+}
 
+template<class I, class V, class E>
+void my::graph<I, V, E>::eraseVertex(direct_vertex_iterator _itr)
+{
+    vertexes.erase(_itr); //может ли erase выкинуть исключение?
+}
 
-//template<class I, class V, class E>
-//template<class I, class V, class E>
-//template<class I, class V, class E>
-//template<class I, class V, class E>
-//template<class I, class V, class E>
+template<class I, class V, class E>
+typename my::graph<I, V, E>::direct_edge_iterator
+        my::graph<I, V, E>::insertEdge(I id_1, I id_2, E _value)
+{
+    direct_vertex_iterator itr1, itr2;
+    if ((itr1 = vertexes.find(id_1)) == vertexes.end())
+        throw "Vertex doesn't exist";
+    if ((itr2 = vertexes.find(id_2)) == vertexes.end())
+        throw "Vertex doesn't exist";
+    if (edges.find(std::make_pair(id_1, id_2)) != edges.end())
+        throw "Edge has already exist";
+    std::shared_ptr<edge> e(new edge(static_cast<std::weak_ptr<vertex> >(itr1->second),
+           static_cast<std::weak_ptr<vertex> >(itr2->second), _value));
+    itr1->second->rList.insert(std::make_pair(id_2, static_cast<std::weak_ptr<edge> >(e)));
+    itr2->second->tList.insert(std::make_pair(id_1, static_cast<std::weak_ptr<edge> >(e)));
+    return edges.insert(std::make_pair(std::make_pair(id_1, id_2), e)).first;
+}
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::eraseEdge(I id_1, I id_2)
+{
+    direct_edge_iterator itr;
+    if ((itr = edges.find(std::make_pair(id_1, id_2))) == edges.end())
+        throw "Edge doesn't exist";
+    edges.erase(itr);
+}
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::eraseEdge(direct_edge_iterator itr)
+{
+    edges.erase(itr);
+}
+
 //template<class I, class V, class E>
 //template<class I, class V, class E>
 //template<class I, class V, class E>
