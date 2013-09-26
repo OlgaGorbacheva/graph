@@ -8,7 +8,7 @@ my::graph<I, V, E>::edge::edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1,
 
 template<class I, class V, class E>
 my::graph<I, V, E>::edge::edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1,
-                               std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &_value):
+                               std::weak_ptr<my::graph<I, V, E>::vertex> v2, E const &_value):
     value(_value), vertexes(make_pair(v1, v2))
 { }
 

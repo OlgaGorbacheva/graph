@@ -1,21 +1,21 @@
 #include "graph.h"
 
 template <class I, class V, class E>
-my::graph<I, V, E>::vertex::vertex(I &_id): id(_id), value(), rList(), tList()
+my::graph<I, V, E>::vertex::vertex(I const &_id): id(_id), value(), rList(), tList()
 { }
 
 template <class I, class V, class E>
-my::graph<I, V, E>::vertex::vertex(I &_id, V &_value): id(_id), value(_value), rList(), tList()
+my::graph<I, V, E>::vertex::vertex(I const &_id, V const &_value): id(_id), value(_value), rList(), tList()
 { }
 
 template <class I, class V, class E>
-my::graph<I, V, E>::vertex::vertex(I &_id, V &&_value) noexcept: id(_id), rList(), tList()
+my::graph<I, V, E>::vertex::vertex(I const &_id, V &&_value) noexcept: id(_id), rList(), tList()
 {
     value = std::move(_value);
 }
 
 template <class I, class V, class E>
-my::graph<I, V, E>::vertex::vertex(I &&_id, V &_value) noexcept: value(_value), rList(), tList()
+my::graph<I, V, E>::vertex::vertex(I &&_id, V const &_value) noexcept: value(_value), rList(), tList()
 {
     id = std::move(_id);
 }

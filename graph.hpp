@@ -6,7 +6,7 @@ my::graph<I, V, E>::graph()
 { }
 
 template<class I, class V, class E>
-my::graph<I, V, E>::graph(graph<I, V, E> &_G)
+my::graph<I, V, E>::graph(graph<I, V, E> const &_G)
 {
     for (direct_vertex_iterator itr = _G.vertexes.begin(), end = _G.vertexes.end(); itr != end; itr++){
         this->insertVertex(itr->second->id, itr->second->value);
@@ -14,6 +14,13 @@ my::graph<I, V, E>::graph(graph<I, V, E> &_G)
     for (direct_edge_iterator itr = _G.edges.begin(), end = _G.edges.end(); itr != end; itr++){
         this->insertEdge(itr->first.first, itr->first.second, itr->second->value);
     }
+}
+
+template<class I, class V, class E>
+my::graph<I, V, E>::graph(graph<I, V, E> &&_G) noexcept
+{
+    vertexes = std::move(_G.vertexes);
+    edges = std::move(_G.edges);
 }
 
 template<class I, class V, class E>
@@ -43,15 +50,22 @@ void my::graph<I, V, E>::swap(graph<I, V, E> &_G) noexcept
 }
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::operator =(my::graph<I, V, E> &_G)
+void my::graph<I, V, E>::operator =(my::graph<I, V, E> const &_G)
 {
     graph<I, V, E> tmp(_G);
     this->swap(tmp);
 }
 
 template<class I, class V, class E>
+void my::graph<I, V, E>::operator =(my::graph<I, V, E> &&_G)
+{
+    vertexes = std::move(_G.vertexes);
+    edges = std::move(_G.edges);
+}
+
+template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_vertex_iterator
-            my::graph<I, V, E>::insertVertex(I _id, V _value)
+            my::graph<I, V, E>::insertVertex(I const &_id, V const &_value)
 {
     if (vertexes.find(_id) != vertexes.end())
         throw "Vertex has already existed";
@@ -60,7 +74,7 @@ typename my::graph<I, V, E>::direct_vertex_iterator
 }
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::eraseVertex(I _id)
+void my::graph<I, V, E>::eraseVertex(I const &_id)
 {
     direct_vertex_iterator itr;
     if ((itr = vertexes.find(_id)) == vertexes.end())
@@ -69,14 +83,14 @@ void my::graph<I, V, E>::eraseVertex(I _id)
 }
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::eraseVertex(direct_vertex_iterator _itr)
+void my::graph<I, V, E>::eraseVertex(direct_vertex_iterator const _itr)
 {
     vertexes.erase(_itr); //может ли erase выкинуть исключение?
 }
 
 template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_edge_iterator
-        my::graph<I, V, E>::insertEdge(I id_1, I id_2, E _value)
+        my::graph<I, V, E>::insertEdge(I const &id_1, I const &id_2, E const &_value)
 {
     direct_vertex_iterator itr1, itr2;
     if ((itr1 = vertexes.find(id_1)) == vertexes.end())
@@ -93,7 +107,7 @@ typename my::graph<I, V, E>::direct_edge_iterator
 }
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::eraseEdge(I id_1, I id_2)
+void my::graph<I, V, E>::eraseEdge(I const &id_1, I const &id_2)
 {
     direct_edge_iterator itr;
     if ((itr = edges.find(std::make_pair(id_1, id_2))) == edges.end())
@@ -102,7 +116,7 @@ void my::graph<I, V, E>::eraseEdge(I id_1, I id_2)
 }
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::eraseEdge(direct_edge_iterator itr)
+void my::graph<I, V, E>::eraseEdge(direct_edge_iterator const itr)
 {
     edges.erase(itr);
 }
@@ -120,8 +134,108 @@ my::graph<I, V, E> my::graph<I, V, E>::transpose()
     return result;
 }
 
+template<class I, class V, class E>
+std::vector<std::pair<I, E> > my::graph<I, V, E>::getOutEdges(I const &id)
+{
+    try{
+        std::vector<typename std::unordered_map<I, std::weak_ptr<my::graph<I, V, E>::edge> >::iterator> toErase;
+        std::vector<std::pair<I, E> > result;
+        auto itr = vertexes.at(id)->rList.begin(), end = vertexes.at(id)->rList.end();
+        for (;itr != end; itr++) //пройдем по прямому списку связности
+            if (itr->second.expired())
+                toErase.push_back(itr);
+            else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
+        auto er_itr = toErase.begin(), er_end = toErase.end();
+        for (;er_itr != er_end; er_itr++)
+            vertexes.at(id)->rList.erase(*er_itr);
+        return result;
 
-//template<class I, class V, class E>
+    }
+    catch(std::out_of_range){
+        throw "Vertex doesn't exist";
+    }
+}
+
+template<class I, class V, class E>
+std::vector<std::pair<I, E> > my::graph<I, V, E>::getInEdges(I const &id)
+{
+    try{
+        std::vector<typename std::unordered_map<I, std::weak_ptr<my::graph<I, V, E>::edge> >::iterator> toErase;
+        std::vector<std::pair<I, E> > result;
+        auto itr = vertexes.at(id)->tList.begin(), end = vertexes.at(id)->tList.end();
+        for (;itr != end; itr++) //пройдем по обратному списку связности
+            if (itr->second.expired())
+                toErase.push_back(itr);
+            else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
+        auto er_itr = toErase.begin(), er_end = toErase.end();
+        for (;er_itr != er_end; er_itr++)
+            vertexes.at(id)->rList.erase(*er_itr);
+        return result;
+
+    }
+    catch(std::out_of_range){
+        throw "Vertex doesn't exist";
+    }
+}
+
+template<class I, class V, class E>
+std::vector<std::pair<I, V> > my::graph<I, V, E>::getAccessVertexes(I const &id)
+{
+    try{
+        std::vector<typename std::unordered_map<I, std::weak_ptr<my::graph<I, V, E>::edge> >::iterator> toErase;
+        std::vector<std::pair<I, V> > result;
+        auto itr = vertexes.at(id)->rList.begin(), end = vertexes.at(id)->rList.end();
+        for (;itr != end; itr++) //пройдем по прямому списку связности
+            if (itr->second.expired())
+                toErase.push_back(itr);
+            else
+                if (!itr->second.lock()->vertexes.second.expired())
+                    result.push_back(std::make_pair(itr->first, (itr->second.lock()->vertexes.second).lock()->value));
+        auto er_itr = toErase.begin(), er_end = toErase.end();
+        for (;er_itr != er_end; er_itr++){
+            try{
+                vertexes.at(id)->rList.erase(*er_itr);
+            }
+            catch(std::out_of_range){
+            }
+        }
+        return result;
+
+    }
+    catch(std::out_of_range){
+        throw "Vertex doesn't exist";
+    }
+}
+
+template<class I, class V, class E>
+std::vector<std::pair<I, V> > my::graph<I, V, E>::getPreviousVertexes(I const &id)
+{
+    try{
+        std::vector<typename std::unordered_map<I, std::weak_ptr<my::graph<I, V, E>::edge> >::iterator> toErase;
+        std::vector<std::pair<I, V> > result;
+        auto itr = vertexes.at(id)->tList.begin(), end = vertexes.at(id)->tList.end();
+        for (;itr != end; itr++) //пройдем по прямому списку связности
+            if (itr->second.expired())
+                toErase.push_back(itr);
+            else
+                if (!itr->second.lock()->vertexes.first.expired())
+                    result.push_back(std::make_pair(itr->first, (itr->second.lock()->vertexes.first).lock()->value));
+        auto er_itr = toErase.begin(), er_end = toErase.end();
+        for (;er_itr != er_end; er_itr++){
+            try{
+                vertexes.at(id)->rList.erase(*er_itr);
+            }
+            catch(std::out_of_range){
+            }
+        }
+        return result;
+
+    }
+    catch(std::out_of_range){
+        throw "Vertex doesn't exist";
+    }
+}
+
 //template<class I, class V, class E>
 //template<class I, class V, class E>
 //template<class I, class V, class E>

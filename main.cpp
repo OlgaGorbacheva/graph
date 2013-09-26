@@ -29,13 +29,15 @@ int main()
     G.insertVertex(3, 9);
     my::graph<int, int, int>::direct_edge_iterator itr2 = G.insertEdge(1, 2, 3);
     G.insertEdge(2, 3, 4);
-    G.eraseEdge(itr2);
-    G.eraseEdge(2, 3);
-    try{
+    G.insertEdge(1, 3, 4);
+//    G.eraseEdge(itr2);
+//    G.eraseEdge(2, 3);
     my::graph<int, int, int> V = G.transpose();
     my::graph<int, int, int> K(G);
     K = V;
-    }
+    vector<pair<int, int> > ed = G.getPreviousVertexes(3);
+    for (auto itr = ed.begin(), end = ed.end(); itr != end; itr++)
+        cout << itr->first << ' ' << itr->second << endl;
 //    G.insertEdge(1,);
 //    try{
 //        G.eraseEdge(1, 2);
@@ -45,9 +47,9 @@ int main()
 //    try{
 //        G.eraseVertex(8);
 //    }
-    catch(char const *s){
-        cerr << s;
-    }
+//    catch(char const *s){
+//        cerr << s;
+//    }
 //    G.eraseVertex(1);
 //    try{
 //        G.eraseVertex(itr);
