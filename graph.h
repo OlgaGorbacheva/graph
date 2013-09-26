@@ -9,11 +9,18 @@
 #include <stdexcept>
 #include <map>
 #include <utility>
+#include <iostream>
 
 namespace my{
 
 template<class I, class V, class E>
 class graph;
+
+template<class I, class V, class E>
+std::istream& operator >> (std::istream &cin, graph<I, V, E> &_graph);
+
+template<class I, class V, class E>
+std::ostream& operator <<(std::ostream &cout, graph<I, V, E> const &_graph);
 
 }
 
@@ -27,6 +34,10 @@ private:
     std::unordered_map<I, std::shared_ptr<vertex> > vertexes;
     std::map<std::pair<I, I>, std::shared_ptr<edge> > edges;
 public:
+
+    typedef typename std::unordered_map<I, std::shared_ptr<vertex> >::const_iterator direct_vertex_iterator;
+    typedef typename std::map<std::pair<I, I>, std::shared_ptr<edge> >::const_iterator direct_edge_iterator;
+
     graph();
     graph(graph<I, V, E> const &_G);
     graph(graph<I, V, E> &&_G) noexcept;
@@ -37,29 +48,28 @@ public:
     void operator =(graph<I, V, E> const &_G);
     void operator =(graph<I, V, E> &&_G);
 
-    typedef typename std::unordered_map<I, std::shared_ptr<vertex> >::const_iterator direct_vertex_iterator;
-    typedef typename std::map<std::pair<I, I>, std::shared_ptr<edge> >::const_iterator direct_edge_iterator;
-
     direct_vertex_iterator insertVertex(I const &id, V const &_value);
     direct_edge_iterator insertEdge(I const &id_1, I const &id_2, E const &_value);
 
     void eraseVertex(I const &id);
     void eraseEdge(I const &id_1, I const &id_2);
+
     void eraseVertex(direct_vertex_iterator const itr); //не понятно как проверять принадлежность вершины к контейнеру по итератору
     void eraseEdge(direct_edge_iterator const itr); //аналогично с предыдущим пунктом
 
     graph<I, V, E> transpose();
 
-    std::vector<std::pair<I, E> > getOutEdges(I const &id);
-    std::vector<std::pair<I, E> > getInEdges(I const &id);
-    std::vector<std::pair<I, V> > getAccessVertexes(I const &id);
-    std::vector<std::pair<I, V> > getPreviousVertexes(I const &id);
+    std::vector<std::pair<I, E> > getOutEdges(I const &id) const;
+    std::vector<std::pair<I, E> > getInEdges(I const &id) const;
+    std::vector<std::pair<I, V> > getAccessVertexes(I const &id) const;
+    std::vector<std::pair<I, V> > getPreviousVertexes(I const &id) const;
+    std::vector<std::pair<I, V> > getVertexes() const;
 
-    template <class T, class U, class K>
-    friend std::istream& operator >>(std::istream &cin, graph<T, U, K> &_graph);
+    void clear();
 
-    template <class T, class U, class K>
-    friend std::ostream& operator <<(std::ostream &cout, graph<T, U, K> const &_graph);
+    friend std::istream& operator >> <I, V, E> (std::istream &cin, graph<I, V, E> &_graph);
+
+    friend std::ostream& operator << <I, V, E> (std::ostream &cout, graph<I, V, E> const &_graph);
 
     class iterator_dfs;
     class iterator_bfs;
