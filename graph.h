@@ -8,6 +8,7 @@
 #include <queue>
 #include <stdexcept>
 #include <map>
+#include <utility>
 
 namespace my{
 
@@ -28,7 +29,12 @@ private:
 public:
     graph();
     graph(graph<I, V, E> &_G);
-    graph(graph<I, V, E> &&_G) noexcept;
+//    graph(graph<I, V, E> &&_G) noexcept;
+
+    ~graph();
+
+    void swap(graph<I, V, E> &_G) noexcept;
+    void operator=(graph<I, V, E> &_G);
 
     typedef typename std::unordered_map<I, std::shared_ptr<vertex> >::iterator direct_vertex_iterator;
     typedef typename std::map<std::pair<I, I>, std::shared_ptr<edge> >::iterator direct_edge_iterator;
@@ -81,7 +87,7 @@ public:
     vertex(I &&_id, V &_value) noexcept;
     vertex(I &&_id, V &&_value) noexcept;
     vertex(my::graph<I, V, E>::vertex &_ver) = delete;
-    vertex(my::graph<I, V, E>::vertex &&_ver) noexcept;
+//    vertex(my::graph<I, V, E>::vertex &&_ver) noexcept;
 
     I getId();
     V getValue();
@@ -100,6 +106,7 @@ public:
     edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2);
     edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &_value);
     edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &&_value);
+    edge(edge &e) = delete;
 
     E getValue();
     std::pair<I, I> getVertexes();

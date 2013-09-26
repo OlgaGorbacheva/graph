@@ -6,6 +6,50 @@ my::graph<I, V, E>::graph()
 { }
 
 template<class I, class V, class E>
+my::graph<I, V, E>::graph(graph<I, V, E> &_G)
+{
+    for (direct_vertex_iterator itr = _G.vertexes.begin(), end = _G.vertexes.end(); itr != end; itr++){
+        this->insertVertex(itr->second->id, itr->second->value);
+    }
+    for (direct_edge_iterator itr = _G.edges.begin(), end = _G.edges.end(); itr != end; itr++){
+        this->insertEdge(itr->first.first, itr->first.second, itr->second->value);
+    }
+}
+
+template<class I, class V, class E>
+my::graph<I, V, E>::~graph()
+{ }
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::swap(graph<I, V, E> &_G) noexcept
+{
+    graph<I, V, E> tmp(*this);
+    this->vertexes.clear();
+    this->edges.clear();
+    for (direct_vertex_iterator itr = _G.vertexes.begin(), end = _G.vertexes.end(); itr != end; itr++){
+        this->insertVertex(itr->second->id, itr->second->value);
+    }
+    for (direct_edge_iterator itr = _G.edges.begin(), end = _G.edges.end(); itr != end; itr++){
+        this->insertEdge(itr->first.first, itr->first.second, itr->second->value);
+    }
+    _G.vertexes.clear();
+    _G.edges.clear();
+    for (direct_vertex_iterator itr = tmp.vertexes.begin(), end = tmp.vertexes.end(); itr != end; itr++){
+        _G.insertVertex(itr->second->id, itr->second->value);
+    }
+    for (direct_edge_iterator itr = tmp.edges.begin(), end = tmp.edges.end(); itr != end; itr++){
+        _G.insertEdge(itr->first.first, itr->first.second, itr->second->value);
+    }
+}
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::operator =(my::graph<I, V, E> &_G)
+{
+    graph<I, V, E> tmp(_G);
+    this->swap(tmp);
+}
+
+template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_vertex_iterator
             my::graph<I, V, E>::insertVertex(I _id, V _value)
 {
@@ -63,7 +107,20 @@ void my::graph<I, V, E>::eraseEdge(direct_edge_iterator itr)
     edges.erase(itr);
 }
 
-//template<class I, class V, class E>
+template<class I, class V, class E>
+my::graph<I, V, E> my::graph<I, V, E>::transpose()
+{
+    graph<I, V, E> result;
+    for (direct_vertex_iterator itr = vertexes.begin(), end = vertexes.end(); itr != end; itr++){
+        result.insertVertex(itr->second->id, itr->second->value);
+    }
+    for (direct_edge_iterator itr = edges.begin(), end = edges.end(); itr != end; itr++){
+        result.insertEdge(itr->first.second, itr->first.first, itr->second->value);
+    }
+    return result;
+}
+
+
 //template<class I, class V, class E>
 //template<class I, class V, class E>
 //template<class I, class V, class E>

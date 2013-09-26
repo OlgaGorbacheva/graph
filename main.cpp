@@ -31,10 +31,15 @@ int main()
     G.insertEdge(2, 3, 4);
     G.eraseEdge(itr2);
     G.eraseEdge(2, 3);
-//    G.insertEdge(1,);
     try{
-        G.eraseEdge(1, 2);
+    my::graph<int, int, int> V = G.transpose();
+    my::graph<int, int, int> K(G);
+    K = V;
     }
+//    G.insertEdge(1,);
+//    try{
+//        G.eraseEdge(1, 2);
+//    }
 
 //    G.eraseVertex(2);
 //    try{
