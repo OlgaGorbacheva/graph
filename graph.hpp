@@ -351,18 +351,18 @@ typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::end_dfs()
     return itr;
 }
 
-//template<class DataV,  class DataE>
-//typename graph<DataV, DataE>::iterator_bfs graph<DataV, DataE>::begin(int)
-//{
-//    iterator_bfs itr(this);
-//    ++itr;
-//    return itr;
-//}
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs()
+{
+    iterator_bfs itr(*this);
+    ++itr;
+    return itr;
+}
 
-//template<class DataV,  class DataE>
-//typename graph<DataV, DataE>::iterator_bfs graph<DataV, DataE>::end(int)
-//{
-//    iterator_bfs itr(this);
-//    itr.elem = Inf.end();
-//    return itr;
-//}
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::end_bfs()
+{
+    iterator_bfs itr(*this);
+    itr.elem = vertexes.end();
+    return itr;
+}

@@ -153,7 +153,7 @@ public:
     void operator =(my::graph<I, V, E>::iterator_dfs &&_itr);
 
     my::graph<I, V, E>::vertex & operator *();
-    my::graph<I, V, E>::vertex & operator ->();
+    my::graph<I, V, E>::vertex & operator ->(); //по необъяснимой причине не работает
 
     iterator_dfs & operator++();
     iterator_dfs operator ++(int);
@@ -170,14 +170,20 @@ class my::graph<I, V, E>::iterator_bfs
 private:
     std::unordered_map<I, int> color;
     std::queue<I> passed;
-    my::graph<I, V, E>::direct_vertex_iterator itr;
+    my::graph<I, V, E>::direct_vertex_iterator elem;
     my::graph<I, V, E> &G;
+
+    void swap(iterator_bfs &_itr) noexcept;
+
 public:
     friend class graph;
 
     iterator_bfs(my::graph<I, V, E> &_G);
-    iterator_bfs(my::graph<I, V, E>::iterator_bfs &_itr);
+    iterator_bfs(my::graph<I, V, E>::iterator_bfs const &_itr);
     iterator_bfs(my::graph<I, V, E>::iterator_bfs &&_itr) noexcept;
+
+    void operator =(my::graph<I, V, E>::iterator_bfs const &_itr);
+    void operator =(my::graph<I, V, E>::iterator_bfs &&_itr);
 
     my::graph<I, V, E>::vertex & operator *();
     my::graph<I, V, E>::vertex & operator ->();
