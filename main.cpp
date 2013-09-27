@@ -11,11 +11,11 @@ int main()
         cerr << "Input error" << endl;
         return 0;
     }
-    ofstream fout("/home/olga/Documents/program/3rd_semester/graph/output.txt");
-    if (!fout.is_open()){
-        cerr << "Input error" << endl;
-        return 0;
-    }
+//    ofstream fout("/home/olga/Documents/program/3rd_semester/graph/output.txt");
+//    if (!fout.is_open()){
+//        cerr << "Input error" << endl;
+//        return 0;
+//    }
 //    int a = 1, b = 2, c = 5;
 //    my::graph<int, int, int>::vertex *v1 = new my::graph<int, int, int>::vertex(a, a),
 //            *v2 = new my::graph<int, int, int>::vertex(b, b);
@@ -40,7 +40,7 @@ int main()
 //    for (auto itr = ed.begin(), end = ed.end(); itr != end; itr++)
 //        cout << itr->first << ' ' << itr->second << endl;
     fin >> G;
-    cout << G;
+//    cout << G;
 //    G.insertEdge(1,);
 //    try{
 //        G.eraseEdge(1, 2);

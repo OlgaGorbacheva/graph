@@ -1,12 +1,70 @@
-#ifndef ITERATOR_H
-#define ITERATOR_H
 #include "graph.h"
 
-//template<class V, class E>
-//graph<V, E>::iterator_dfs::iterator_dfs(graph<V, E> &_G):G(_G)
-//{ // заполнить color 0
-//}
+template<class I, class V, class E>
+void my::graph<I, V, E>::iterator_dfs::swap (iterator_dfs const &_itr) noexcept
+{
+    iterator_dfs tmp(_itr);
+    _itr.color = color;
+    _itr.G = G;
+    _itr.itr = itr;
+    _itr.passed = passed;
+    color = tmp.color;
+    G = tmp.G;
+    itr = tmp.itr;
+    passed = tmp.passed;
+}
 
+template<class I, class V, class E>
+my::graph<I, V, E>::iterator_dfs::iterator_dfs(graph<I, V, E> &_G):G(_G)
+{
+    direct_vertex_iterator itr = G.ver_begin(), end =G.ver_end();
+    for (;itr != end; itr++){
+        color[itr->first] = 0;
+    }
+}
+
+template<class I, class V, class E>
+my::graph<I, V, E>::iterator_dfs::iterator_dfs(iterator_dfs const &_itr):color(_itr.color), passed(_itr.color),
+                                                                            itr(_itr.itr), G(_itr.G)
+{ }
+
+template<class I, class V, class E>
+my::graph<I, V, E>::iterator_dfs::iterator_dfs(iterator_dfs &&_itr)noexcept: G(_itr.G)
+{
+    color = std::move(_itr.color);
+    passed = std::move(_itr.passed);
+    itr = std::move(_itr.itr);
+}
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs const &_itr)
+{
+    iterator_dfs tmp(_itr);
+    this->swap(tmp);
+}
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs const &_itr)
+{
+    color = std::move(_itr.color); // можно так делать или нет? не будет ли подтекать память в этом месте?
+    passed = std::move(_itr.passed);
+    itr = std::move(_itr.itr);
+}
+
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
+//template<class I, class V, class E>
 //template<class V, class E>
 //graph<V, E>::iterator_dfs::iterator_dfs(graph<V, E>::iterator_dfs const &itr):color(itr.color),
 //    elem(itr.elem), passed(itr.passed), G(itr.G)
@@ -135,5 +193,3 @@
 //{
 //    return elem != itr.elem;
 //}
-
-#endif // ITERATOR_H

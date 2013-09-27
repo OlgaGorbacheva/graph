@@ -27,16 +27,19 @@ std::ostream& operator <<(std::ostream &cout, graph<I, V, E> const &_graph);
 template<class I, class V, class E>
 class my::graph
 {
-public:
+public:    
     class vertex;
     class edge;
-private:
-    std::unordered_map<I, std::shared_ptr<vertex> > vertexes;
-    std::map<std::pair<I, I>, std::shared_ptr<edge> > edges;
-public:
 
     typedef typename std::unordered_map<I, std::shared_ptr<vertex> >::const_iterator direct_vertex_iterator;
     typedef typename std::map<std::pair<I, I>, std::shared_ptr<edge> >::const_iterator direct_edge_iterator;
+
+private:    
+    std::unordered_map<I, std::shared_ptr<vertex> > vertexes;
+    std::map<std::pair<I, I>, std::shared_ptr<edge> > edges;    
+    void swap(graph<I, V, E> &_G) noexcept;
+
+public:
 
     graph();
     graph(graph<I, V, E> const &_G);
@@ -44,7 +47,6 @@ public:
 
     ~graph();
 
-    void swap(graph<I, V, E> &_G) noexcept;
     void operator =(graph<I, V, E> const &_G);
     void operator =(graph<I, V, E> &&_G);
 
@@ -57,7 +59,7 @@ public:
     void eraseVertex(direct_vertex_iterator const itr); //не понятно как проверять принадлежность вершины к контейнеру по итератору
     void eraseEdge(direct_edge_iterator const itr); //аналогично с предыдущим пунктом
 
-    graph<I, V, E> transpose();
+    graph<I, V, E> transpose() const;
 
     std::vector<std::pair<I, E> > getOutEdges(I const &id) const;
     std::vector<std::pair<I, E> > getInEdges(I const &id) const;
@@ -78,6 +80,12 @@ public:
     iterator_dfs end_dfs();
     iterator_bfs begin_bfs();
     iterator_bfs end_bfs();
+
+    direct_vertex_iterator ver_begin();
+    direct_vertex_iterator ver_end();
+    direct_edge_iterator ed_begin();
+    direct_edge_iterator ed_end();
+
 };
 
 template<class I, class V, class E>
@@ -131,12 +139,18 @@ private:
     std::stack<I> passed;
     my::graph<I, V, E>::direct_vertex_iterator itr;
     my::graph<I, V, E> &G;
+
+    void swap(iterator_dfs const &_itr) noexcept;
+
 public:
     friend class graph;
 
     iterator_dfs(my::graph<I, V, E> &_G);
-    iterator_dfs(my::graph<I, V, E>::iterator_dfs &_itr);
+    iterator_dfs(my::graph<I, V, E>::iterator_dfs const &_itr);
     iterator_dfs(my::graph<I, V, E>::iterator_dfs &&_itr) noexcept;
+
+    void operator =(my::graph<I, V, E>::iterator_dfs const &_itr);
+    void operator =(my::graph<I, V, E>::iterator_dfs &&_itr);
 
     my::graph<I, V, E>::vertex & operator *();
     my::graph<I, V, E>::vertex & operator ->();
@@ -177,82 +191,8 @@ public:
     int getColor();
 };
 
-//#include <list>
-//#include <vector>
-//#include <iostream>
-//#include <algorithm>
-//#include <stack>
-//#include <queue>
-//#include <memory>
-//#include <map>
-//#include <unordered_map>
-
-//using namespace std;
-
-//template<class V, class E>
-//class graph;
-
-//template<class V, class E>
-//class vertex
-//{
-//private:
-//    V value;                                                           //значение вершины
-//    std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> > rList;  //прямой список смежности для вершины
-//    std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> > tList;  //обратный список смежности для вершины
-//public:
-
-////    template<class T, class U>
-//    friend class graph<V, E>;
-
-//    vertex<V, E>(V _value): value(_value) {}
-//    vertex<V, E>(vertex<V, E> const &_v): value(_v.value), rList(_v.rList), tList(_v.tList) {}
-//    V get(){return value;}
-//    int getNum(){return rList.size();}
-//};
-
-//template<class V, class E>
-//class graph
-//{
-//private:
-//    std::map<int, std::shared_ptr<vertex<V, E> > > ver;  //список вершин с номерами, c которыми вводим/выводим
-
-//public:
-//    friend class vertex<V, E>;
-
-//    typedef typename std::map<int, std::pair<std::weak_ptr<vertex<V, E> >, E> >::iterator edge_iterator;
-//    typedef typename std::map<int, std::shared_ptr<vertex<V, E> > >::iterator vertex_iterator;
-
-//    graph();
-
-//    graph<V, E> transpose();
-
-//    std::list<std::pair<int, E> > getInEdges(int v); //список входящих ребер
-//    std::list<std::pair<int, E> > getOutEdges(int v); //список выходящих ребер
-//    std::list<std::pair<int, V> > getAccessVertexes(int v); //список достижимых вершин
-//    std::list<std::pair<int, V> > getPreviousVertexes(int v); //список предыдущих вершин
-
-//    void insertVertex(int v, V _value);
-//    void eraseVertex(int v);
-//    void insertEdge(int v1, int v2, E _value);
-//    void eraseEdge(int v1, int v2);
-
-//    template <class T, class U>
-//    friend std::istream& operator >>(std::istream &cin, graph<T, U> &_graph);
-
-//    template <class T, class U>
-//    friend std::ostream& operator << (std::ostream &cout, graph<T, U> &_graph);
-
-////    class iterator_dfs;
-////    class iterator_bfs;
-
-////    iterator_dfs begin_dfs();
-////    iterator_dfs end_dfs();
-////    iterator_bfs begin(int);
-////    iterator_bfs end(int);
-//};
-
-//template<class V, class E>
-//class graph<V, E>::iterator_dfs
+//template<class I, class V, class E>
+//class my::graph<I, V, E>::iterator_dfs
 //{
 //private:
 //    std::unordered_map<int, char> color;
