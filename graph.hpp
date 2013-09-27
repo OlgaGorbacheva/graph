@@ -314,42 +314,42 @@ std::ostream& my::operator <<(std::ostream &cout, my::graph<I, V, E> const &_gra
 template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_vertex_iterator my::graph<I, V, E>::ver_begin()
 {
-    return vertexes.begin;
+    return vertexes.begin();
 }
 
 template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_vertex_iterator my::graph<I, V, E>::ver_end()
 {
-    return vertexes.end;
+    return vertexes.end();
 }
 
 template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_edge_iterator my::graph<I, V, E>::ed_begin()
 {
-    return edges.begin;
+    return edges.begin();
 }
 
 template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_edge_iterator my::graph<I, V, E>:: ed_end()
 {
-    return edges.end;
+    return edges.end();
 }
 
-//template<class TypeV,  class TypeE>
-//typename graph<TypeV, TypeE>::iterator_dfs graph<TypeV, TypeE>::begin_dfs()
-//{
-//    iterator_dfs itr(this);
-//    ++itr;
-//    return itr;
-//}
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs()
+{
+    iterator_dfs itr(*this);
+    ++itr;
+    return itr;
+}
 
-//template<class TypeV,  class TypeE>
-//typename graph<TypeV, TypeE>::iterator_dfs graph<TypeV, TypeE>::end_dfs()
-//{
-//    iterator_dfs itr(this);
-//    itr.elem = ver.end();
-//    return itr;
-//}
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::end_dfs()
+{
+    iterator_dfs itr(*this);
+    itr.elem = vertexes.end();
+    return itr;
+}
 
 //template<class DataV,  class DataE>
 //typename graph<DataV, DataE>::iterator_bfs graph<DataV, DataE>::begin(int)

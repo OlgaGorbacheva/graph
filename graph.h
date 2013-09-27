@@ -107,8 +107,8 @@ public:
     vertex(my::graph<I, V, E>::vertex &_ver) = delete;
 //    vertex(my::graph<I, V, E>::vertex &&_ver) noexcept;
 
-    I getId();
-    V getValue();
+    I getId() const;
+    V getValue() const;
 };
 
 template<class I, class V, class E>
@@ -126,9 +126,9 @@ public:
     edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1, std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &&_value);
     edge(edge const &e) = delete;
 
-    E getValue();
-    std::pair<I, I> getVertexes();
-    std::pair<std::weak_ptr<my::graph<I, V, E>::vertex>, std::weak_ptr<my::graph<I, V, E>::vertex> > getVertexPointers();
+    E getValue() const;
+    std::pair<I, I> getVertexes() const;
+    std::pair<std::weak_ptr<my::graph<I, V, E>::vertex>, std::weak_ptr<my::graph<I, V, E>::vertex> > getVertexPointers() const;
 };
 
 template<class I, class V, class E>
@@ -137,10 +137,10 @@ class my::graph<I, V, E>::iterator_dfs
 private:
     std::unordered_map<I, int> color;
     std::stack<I> passed;
-    my::graph<I, V, E>::direct_vertex_iterator itr;
+    my::graph<I, V, E>::direct_vertex_iterator elem;
     my::graph<I, V, E> &G;
 
-    void swap(iterator_dfs const &_itr) noexcept;
+    void swap(iterator_dfs &_itr) noexcept;
 
 public:
     friend class graph;

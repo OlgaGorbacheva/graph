@@ -28,13 +28,13 @@ my::graph<I, V, E>::vertex::vertex(I &&_id, V &&_value) noexcept: rList(), tList
 }
 
 template <class I, class V, class E>
-I my::graph<I, V, E>::vertex::getId()
+I my::graph<I, V, E>::vertex::getId() const
 {
     return id;
 }
 
 template <class I, class V, class E>
-V my::graph<I, V, E>::vertex::getValue()
+V my::graph<I, V, E>::vertex::getValue() const
 {
     return value;
 }

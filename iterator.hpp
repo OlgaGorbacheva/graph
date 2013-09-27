@@ -1,16 +1,16 @@
 #include "graph.h"
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::iterator_dfs::swap (iterator_dfs const &_itr) noexcept
+void my::graph<I, V, E>::iterator_dfs::swap (iterator_dfs &_itr) noexcept
 {
     iterator_dfs tmp(_itr);
     _itr.color = color;
     _itr.G = G;
-    _itr.itr = itr;
+    _itr.elem = elem;
     _itr.passed = passed;
     color = tmp.color;
     G = tmp.G;
-    itr = tmp.itr;
+    elem = tmp.elem;
     passed = tmp.passed;
 }
 
@@ -24,8 +24,8 @@ my::graph<I, V, E>::iterator_dfs::iterator_dfs(graph<I, V, E> &_G):G(_G)
 }
 
 template<class I, class V, class E>
-my::graph<I, V, E>::iterator_dfs::iterator_dfs(iterator_dfs const &_itr):color(_itr.color), passed(_itr.color),
-                                                                            itr(_itr.itr), G(_itr.G)
+my::graph<I, V, E>::iterator_dfs::iterator_dfs(iterator_dfs const &_itr):color(_itr.color), passed(_itr.passed),
+                                                                            elem(_itr.elem), G(_itr.G)
 { }
 
 template<class I, class V, class E>
@@ -33,7 +33,7 @@ my::graph<I, V, E>::iterator_dfs::iterator_dfs(iterator_dfs &&_itr)noexcept: G(_
 {
     color = std::move(_itr.color);
     passed = std::move(_itr.passed);
-    itr = std::move(_itr.itr);
+    elem = std::move(_itr.elem);
 }
 
 template<class I, class V, class E>
@@ -44,16 +44,59 @@ void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs const &_itr)
 }
 
 template<class I, class V, class E>
-void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs const &_itr)
+void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs &&_itr)
 {
     color = std::move(_itr.color); // можно так делать или нет? не будет ли подтекать память в этом месте?
     passed = std::move(_itr.passed);
-    itr = std::move(_itr.itr);
+    elem = std::move(_itr.elem);
 }
 
-//template<class I, class V, class E>
-//template<class I, class V, class E>
-//template<class I, class V, class E>
+template<class I, class V, class E>
+typename my::graph<I, V, E>::vertex & my::graph<I, V, E>::iterator_dfs::operator *()
+{
+    return *(elem->second);
+}
+
+template<class I, class V, class E>
+typename my::graph<I, V, E>::vertex & my::graph<I, V, E>::iterator_dfs::operator ->()
+{
+    return *(elem->second);
+}
+
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_dfs & my::graph<I, V, E>::iterator_dfs::operator ++()
+{
+    if (passed.empty()){
+        auto itr = color.begin(), end = color.end();
+        for (;itr != end; itr++){
+            if (itr->second == 0){
+                passed.push(itr->first);
+                itr->second = 1;
+                elem = G.vertexes.find(itr->first);
+                return *this;
+            }
+        }
+        elem = G.vertexes.end();
+        return *this; //граф закончился
+    }
+
+    while(true){
+        std::vector<std::pair<I, V> > ver = G.getAccessVertexes(passed.top());
+        for (auto itr = ver.begin(), end = ver.end(); itr != end; itr++){
+            if (color[itr->first] == 0){
+                passed.push(itr->first);
+                itr->second = 1;
+                elem = G.vertexes.find(itr->first);
+                return *this;
+            }
+        }
+        elem = G.vertexes.find(passed.top());
+        color[passed.top()] = 2;
+        passed.pop();
+        return *this;
+    }
+}
+
 //template<class I, class V, class E>
 //template<class I, class V, class E>
 //template<class I, class V, class E>
