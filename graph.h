@@ -81,6 +81,9 @@ public:
     iterator_bfs begin_bfs();
     iterator_bfs end_bfs();
 
+    iterator_dfs begin_dfs(I _id);
+    iterator_bfs begin_bfs(I _id);
+
     direct_vertex_iterator ver_begin();
     direct_vertex_iterator ver_end();
     direct_edge_iterator ed_begin();

@@ -202,7 +202,7 @@ typename my::graph<I, V, E>::vertex & my::graph<I, V, E>::iterator_bfs::operator
 template<class I, class V, class E>
 typename my::graph<I, V, E>::vertex & my::graph<I, V, E>::iterator_bfs::operator ->()
 {
-    return *(elem->second);
+    return (elem->second);
 }
 
 template<class I, class V, class E>

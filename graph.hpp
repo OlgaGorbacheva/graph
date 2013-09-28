@@ -350,3 +350,29 @@ typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::end_bfs()
     itr.elem = vertexes.end();
     return itr;
 }
+
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs(I _id)
+{
+    direct_vertex_iterator _elem;
+    if ((_elem = vertexes.find(_id)) == vertexes.end())
+        throw "Vertex doesn't exist";
+    iterator_dfs itr(*this);
+    itr.color[_id] = 1;
+    itr.passed.push(_id);
+    itr.elem = _elem;
+    return itr;
+}
+
+template<class I, class V, class E>
+typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs(I _id)
+{
+    direct_vertex_iterator _elem;
+    if ((_elem = vertexes.find(_id)) == vertexes.end())
+        throw "Vertex doesn't exist";
+    iterator_dfs itr(*this);
+    itr.color[_id] = 1;
+    itr.passed.push(_id);
+    itr.elem = _elem;
+    return itr;
+}
