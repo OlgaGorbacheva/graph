@@ -41,9 +41,7 @@ void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs const &_itr)
 template<class I, class V, class E>
 void my::graph<I, V, E>::iterator_dfs::operator =(iterator_dfs &&_itr)
 {
-    color = std::move(_itr.color); // можно так делать или нет? не будет ли подтекать память в этом месте?
-    passed = std::move(_itr.passed);
-    elem = std::move(_itr.elem);
+    _itr.swap(*this);
 }
 
 template<class I, class V, class E>
@@ -188,9 +186,7 @@ void my::graph<I, V, E>::iterator_bfs::operator =(iterator_bfs const &_itr)
 template<class I, class V, class E>
 void my::graph<I, V, E>::iterator_bfs::operator =(iterator_bfs &&_itr)
 {
-    color = std::move(_itr.color); // можно так делать или нет? не будет ли подтекать память в этом месте?
-    passed = std::move(_itr.passed);
-    elem = std::move(_itr.elem);
+    _itr.swap(*this);
 }
 
 template<class I, class V, class E>
