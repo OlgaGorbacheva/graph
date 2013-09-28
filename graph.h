@@ -189,7 +189,7 @@ public:
     void operator =(my::graph<I, V, E>::iterator_bfs &&_itr);
 
     my::graph<I, V, E>::vertex & operator *();
-    my::graph<I, V, E>::vertex & operator ->();
+    std::shared_ptr<my::graph<I, V, E>::vertex> operator ->();
 
     iterator_bfs & operator++();
     iterator_bfs operator ++(int);
