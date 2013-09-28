@@ -17,7 +17,7 @@ my::graph<I, V, E>::edge::edge(std::weak_ptr<my::graph<I, V, E>::vertex> v1,
                                std::weak_ptr<my::graph<I, V, E>::vertex> v2, E &&_value):
     vertexes(make_pair(v1, v2))
 {
-    value = std::move(_value);
+    std::swap(value, _value);
 }
 
 

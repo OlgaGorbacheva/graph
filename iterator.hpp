@@ -3,15 +3,10 @@
 template<class I, class V, class E>
 void my::graph<I, V, E>::iterator_dfs::swap (iterator_dfs &_itr) noexcept
 {
-    iterator_dfs tmp(_itr);
-    _itr.color = color;
-    _itr.G = G;
-    _itr.elem = elem;
-    _itr.passed = passed;
-    color = tmp.color;
-    G = tmp.G;
-    elem = tmp.elem;
-    passed = tmp.passed;
+    std::swap(color, _itr.color);
+    std::swap(elem, _itr.elem);
+    std::swap(G, _itr.G);
+    std::swap(passed, _itr.passed);
 }
 
 template<class I, class V, class E>
@@ -58,9 +53,9 @@ typename my::graph<I, V, E>::vertex & my::graph<I, V, E>::iterator_dfs::operator
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::vertex & my::graph<I, V, E>::iterator_dfs::operator ->()
+std::shared_ptr<typename my::graph<I, V, E>::vertex > my::graph<I, V, E>::iterator_dfs::operator ->()
 {
-    return *(elem->second);
+    return (elem->second);
 }
 
 template<class I, class V, class E>
@@ -155,15 +150,10 @@ int my::graph<I, V, E>::iterator_dfs::getColor()
 template<class I, class V, class E>
 void my::graph<I, V, E>::iterator_bfs::swap (iterator_bfs &_itr) noexcept
 {
-    iterator_bfs tmp(_itr);
-    _itr.color = color;
-    _itr.G = G;
-    _itr.elem = elem;
-    _itr.passed = passed;
-    color = tmp.color;
-    G = tmp.G;
-    elem = tmp.elem;
-    passed = tmp.passed;
+    std::swap(color, _itr.color);
+    std::swap(elem, _itr.elem);
+    std::swap(G, _itr.G);
+    std::swap(passed, _itr.passed);
 }
 
 template<class I, class V, class E>
@@ -295,7 +285,6 @@ bool my::graph<I, V, E>::iterator_bfs::operator ==(iterator_bfs _itr)
 {
     return elem == _itr.elem;
 }
-
 
 template<class I, class V, class E>
 int my::graph<I, V, E>::iterator_bfs::getColor()

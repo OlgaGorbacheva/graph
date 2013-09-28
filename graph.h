@@ -153,7 +153,7 @@ public:
     void operator =(my::graph<I, V, E>::iterator_dfs &&_itr);
 
     my::graph<I, V, E>::vertex & operator *();
-    my::graph<I, V, E>::vertex & operator ->(); //по необъяснимой причине не работает
+    std::shared_ptr<my::graph<I, V, E>::vertex > operator ->(); //по необъяснимой причине не работает
 
     iterator_dfs & operator++();
     iterator_dfs operator ++(int);
@@ -196,47 +196,7 @@ public:
 
     int getColor();
 };
-
-//template<class I, class V, class E>
-//class my::graph<I, V, E>::iterator_dfs
-//{
-//private:
-//    std::unordered_map<int, char> color;
-//    graph<V, E>::vertex_iterator elem;
-//    std::stack<int> passed;
-//    graph<V, E> &G;
-//public:
-//    iterator_dfs(graph<V, E> &_G);
-//    iterator_dfs(iterator_dfs const &itr);
-
-//    friend class graph;
-
-//    iterator_dfs & operator ++();
-////    shared_ptr<vertex<TypeV> >  & operator *();
-////    bool operator ==(iterator_dfs const itr);
-////    bool operator !=(iterator_dfs const itr);
-//};
-
-//template<class DataV, class DataE>
-//class graph<DataV, DataE>::iterator_bfs
-//{
-//private:
-//    vector<char> color;
-//    typename vector<DataV>::iterator elem;
-//    queue<int> passed;
-//    graph *G;
-//public:
-//    iterator_bfs(graph<DataV, DataE> *_G);
-//    iterator_bfs(iterator_bfs const &itr);
-
-//    friend class graph;
-
-//    iterator_bfs& operator ++();
-//    DataV& operator *();
-//    bool operator ==(iterator_bfs const itr);
-//    bool operator !=(iterator_bfs const itr);
-//};
-
+\
 #include "graph.hpp"
 #include "edge.hpp"
 #include "vertex.hpp"

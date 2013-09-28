@@ -19,8 +19,7 @@ my::graph<I, V, E>::graph(graph<I, V, E> const &_G)
 template<class I, class V, class E>
 my::graph<I, V, E>::graph(graph<I, V, E> &&_G) noexcept
 {
-    vertexes = std::move(_G.vertexes);
-    edges = std::move(_G.edges);
+    _G.swap(*this);
 }
 
 template<class I, class V, class E>
@@ -30,23 +29,8 @@ my::graph<I, V, E>::~graph()
 template<class I, class V, class E>
 void my::graph<I, V, E>::swap(graph<I, V, E> &_G) noexcept
 {
-    graph<I, V, E> tmp(*this);
-    this->vertexes.clear();
-    this->edges.clear();
-    for (direct_vertex_iterator itr = _G.vertexes.begin(), end = _G.vertexes.end(); itr != end; itr++){
-        this->insertVertex(itr->second->id, itr->second->value);
-    }
-    for (direct_edge_iterator itr = _G.edges.begin(), end = _G.edges.end(); itr != end; itr++){
-        this->insertEdge(itr->first.first, itr->first.second, itr->second->value);
-    }
-    _G.vertexes.clear();
-    _G.edges.clear();
-    for (direct_vertex_iterator itr = tmp.vertexes.begin(), end = tmp.vertexes.end(); itr != end; itr++){
-        _G.insertVertex(itr->second->id, itr->second->value);
-    }
-    for (direct_edge_iterator itr = tmp.edges.begin(), end = tmp.edges.end(); itr != end; itr++){
-        _G.insertEdge(itr->first.first, itr->first.second, itr->second->value);
-    }
+    std::swap(edges, _G.edges);
+    std::swap(vertexes, _G.vertexes);
 }
 
 template<class I, class V, class E>
@@ -59,9 +43,9 @@ void my::graph<I, V, E>::operator =(my::graph<I, V, E> const &_G)
 template<class I, class V, class E>
 void my::graph<I, V, E>::operator =(my::graph<I, V, E> &&_G)
 {
-    vertexes = std::move(_G.vertexes); // так можно? оно не потечет?
-    edges = std::move(_G.edges);
+    _G.swap(*this);
 }
+
 
 template<class I, class V, class E>
 typename my::graph<I, V, E>::direct_vertex_iterator
