@@ -128,7 +128,10 @@ std::vector<std::pair<I, E> > my::graph<I, V, E>::getOutEdges(I const &id) const
         for (;itr != end; itr++) //пройдем по прямому списку связности
             if (itr->second.expired())
                 toErase.push_back(itr);
-            else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
+            else
+                if (itr->second.lock()->vertexes.second.expired())
+                    toErase.push_back(itr);
+                else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
         auto er_itr = toErase.begin(), er_end = toErase.end();
         for (;er_itr != er_end; er_itr++)
             vertexes.at(id)->rList.erase(*er_itr);
@@ -150,7 +153,10 @@ std::vector<std::pair<I, E> > my::graph<I, V, E>::getInEdges(I const &id) const
         for (;itr != end; itr++) //пройдем по обратному списку связности
             if (itr->second.expired())
                 toErase.push_back(itr);
-            else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
+            else
+                if (itr->second.lock()->vertexes.first.expired())
+                    toErase.push_back(itr);
+                else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
         auto er_itr = toErase.begin(), er_end = toErase.end();
         for (;er_itr != er_end; er_itr++)
             vertexes.at(id)->rList.erase(*er_itr);
@@ -175,6 +181,7 @@ std::vector<std::pair<I, V> > my::graph<I, V, E>::getAccessVertexes(I const &id)
             else
                 if (!itr->second.lock()->vertexes.second.expired())
                     result.push_back(std::make_pair(itr->first, (itr->second.lock()->vertexes.second).lock()->value));
+                else toErase.push_back(itr);
         auto er_itr = toErase.begin(), er_end = toErase.end();
         for (;er_itr != er_end; er_itr++){
             try{
@@ -204,6 +211,7 @@ std::vector<std::pair<I, V> > my::graph<I, V, E>::getPreviousVertexes(I const &i
             else
                 if (!itr->second.lock()->vertexes.first.expired())
                     result.push_back(std::make_pair(itr->first, (itr->second.lock()->vertexes.first).lock()->value));
+                else toErase.push_back(itr);
         auto er_itr = toErase.begin(), er_end = toErase.end();
         for (;er_itr != er_end; er_itr++){
             try{
