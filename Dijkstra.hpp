@@ -3,6 +3,7 @@
 //template<class E>
 //E
 
+abcdefg;
 
 template<class I, class V, class E>
 E Dijkstra(I _id)
