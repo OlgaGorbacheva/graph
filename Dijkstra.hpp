@@ -3,10 +3,11 @@
 //template<class E>
 //E
 
-aaa;
+//aaa;
 template<class I, class V, class E>
-E Dijkstra(I _id)
+std::map<I, E> Dijkstra(my::graph<I, V, E> &G, I _id)
 {
-    std::vector<E> d;
-    d.resize();
+    std::map<I, E> d;
+    d.resize(G.getVertexesNumber());
+
 }

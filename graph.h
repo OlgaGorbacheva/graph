@@ -56,8 +56,8 @@ public:
     void eraseVertex(I const &id);
     void eraseEdge(I const &id_1, I const &id_2);
 
-    void eraseVertex(direct_vertex_iterator const itr); //не понятно как проверять принадлежность вершины к контейнеру по итератору
-    void eraseEdge(direct_edge_iterator const itr); //аналогично с предыдущим пунктом
+    void eraseVertex(direct_vertex_iterator const itr);
+    void eraseEdge(direct_edge_iterator const itr);
 
     graph<I, V, E> transpose() const;
 
@@ -66,6 +66,8 @@ public:
     std::vector<std::pair<I, V> > getAccessVertexes(I const &id) const;
     std::vector<std::pair<I, V> > getPreviousVertexes(I const &id) const;
     std::vector<std::pair<I, V> > getVertexes() const;
+
+    int getVertexesNumber();
 
     void clear();
 
@@ -112,6 +114,7 @@ public:
 
     I getId() const;
     V getValue() const;
+
 };
 
 template<class I, class V, class E>

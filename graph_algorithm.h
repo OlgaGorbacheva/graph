@@ -3,12 +3,16 @@
 
 #include "graph.h"
 #include <vector>
+#include <map>
+#include <stack>
+#include <unordered_map>
+#include <algorithm>
 
 template<class I, class V, class E>
 std::vector<std::vector<I> > Tarjan(my::graph<I, V, E> &G);
 
 template<class I, class V, class E>
-E Dijkstra(I _id);
+std::map<I, E> Dijkstra(I _id);
 
 #include "Tarjan.hpp"
 #include "Dijkstra.hpp"

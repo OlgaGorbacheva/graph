@@ -53,8 +53,7 @@ typename my::graph<I, V, E>::direct_vertex_iterator
 {
     if (vertexes.find(_id) != vertexes.end())
         throw "Vertex has already existed";
-    return vertexes.insert(std::make_pair(_id,
-            static_cast<std::shared_ptr<vertex> > (new vertex(_id, _value)))).first;
+    return vertexes.insert(std::make_pair(_id, static_cast<std::shared_ptr<vertex> > (new vertex(_id, _value)))).first;
 }
 
 template<class I, class V, class E>
@@ -63,13 +62,33 @@ void my::graph<I, V, E>::eraseVertex(I const &_id)
     direct_vertex_iterator itr;
     if ((itr = vertexes.find(_id)) == vertexes.end())
         throw "Vertex doesn't exist";
+    for (auto ver_itr = itr->second->rList.begin(), end = itr->second->rList.end();
+         ver_itr != end; ver_itr++) {
+        if (!(ver_itr->second.expired()))
+            edges.erase(std::make_pair(_id, ver_itr->first));
+    }
+    for (auto ver_itr = itr->second->tList.begin(), end = itr->second->tList.end();
+         ver_itr != end; ver_itr++) {
+        if (!(ver_itr->second.expired()))
+            edges.erase(std::make_pair( ver_itr->first, _id));
+    }
     vertexes.erase(itr);
 }
 
 template<class I, class V, class E>
 void my::graph<I, V, E>::eraseVertex(direct_vertex_iterator const _itr)
 {
-    vertexes.erase(_itr); //может ли erase выкинуть исключение?
+    for (auto ver_itr = _itr->second->rList.begin(), end = _itr->second->rList.end();
+         ver_itr != end; ver_itr++) {
+        if (!(ver_itr->second.expired()))
+            edges.erase(std::make_pair(_itr->second->id, ver_itr->first));
+    }
+    for (auto ver_itr = _itr->second->tList.begin(), end = _itr->second->tList.end();
+          ver_itr != end; ver_itr++) {
+         if (!(ver_itr->second.expired()))
+             edges.erase(std::make_pair(ver_itr->first, _itr->second->id));
+    }
+    vertexes.erase(_itr);
 }
 
 template<class I, class V, class E>
@@ -128,10 +147,7 @@ std::vector<std::pair<I, E> > my::graph<I, V, E>::getOutEdges(I const &id) const
         for (;itr != end; itr++) //пройдем по прямому списку связности
             if (itr->second.expired())
                 toErase.push_back(itr);
-            else
-                if (itr->second.lock()->vertexes.second.expired())
-                    toErase.push_back(itr);
-                else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
+            else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
         auto er_itr = toErase.begin(), er_end = toErase.end();
         for (;er_itr != er_end; er_itr++)
             vertexes.at(id)->rList.erase(*er_itr);
@@ -153,10 +169,7 @@ std::vector<std::pair<I, E> > my::graph<I, V, E>::getInEdges(I const &id) const
         for (;itr != end; itr++) //пройдем по обратному списку связности
             if (itr->second.expired())
                 toErase.push_back(itr);
-            else
-                if (itr->second.lock()->vertexes.first.expired())
-                    toErase.push_back(itr);
-                else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
+            else result.push_back(std::make_pair(itr->first, itr->second.lock()->value));
         auto er_itr = toErase.begin(), er_end = toErase.end();
         for (;er_itr != er_end; er_itr++)
             vertexes.at(id)->rList.erase(*er_itr);
@@ -301,6 +314,12 @@ std::ostream& my::operator <<(std::ostream &cout, my::graph<I, V, E> const &_gra
             cout << std::endl;
     }
     return cout;
+}
+
+template<class I, class V, class E>
+int my::graph<I, V, E>::getVertexesNumber()
+{
+    return vertexes.size();
 }
 
 template<class I, class V, class E>
