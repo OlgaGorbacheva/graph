@@ -4,7 +4,7 @@
 #include <stack>
 
 template<class I, class V, class E>
-std::vector<std::vector<I> > Tarjan(my::graph<I, V, E> &G)
+std::vector<std::vector<I> > Tarjan(my::graph<I, V, E> const &G)
 {
     std::unordered_map<I, std::pair<int, int> > vertexes; // id вершины, index, low_index
     std::vector<std::vector<I> > areas;

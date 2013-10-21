@@ -323,31 +323,53 @@ int my::graph<I, V, E>::getVertexesNumber()
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::direct_vertex_iterator my::graph<I, V, E>::ver_begin()
+V const & my::graph<I, V, E>::operator [](I const & id) const
+{
+    try {
+        return vertexes.at(id)->value;
+    }
+    catch(std::out_of_range) {
+        throw "Vertex doesn't exist";
+    }
+}
+
+template<class I, class V, class E>
+V & my::graph<I, V, E>::operator [](I const & id)
+{
+    try {
+        return vertexes.at(id)->value;
+    }
+    catch(std::out_of_range) {
+        throw "Vertex doesn't exist";
+    }
+}
+
+template<class I, class V, class E>
+typename my::graph<I, V, E>::direct_vertex_iterator my::graph<I, V, E>::ver_begin() const
 {
     return vertexes.begin();
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::direct_vertex_iterator my::graph<I, V, E>::ver_end()
+typename my::graph<I, V, E>::direct_vertex_iterator my::graph<I, V, E>::ver_end() const
 {
     return vertexes.end();
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::direct_edge_iterator my::graph<I, V, E>::ed_begin()
+typename my::graph<I, V, E>::direct_edge_iterator my::graph<I, V, E>::ed_begin() const
 {
     return edges.begin();
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::direct_edge_iterator my::graph<I, V, E>:: ed_end()
+typename my::graph<I, V, E>::direct_edge_iterator my::graph<I, V, E>:: ed_end() const
 {
     return edges.end();
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs()
+typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs() const
 {
     iterator_dfs itr(*this);
     ++itr;
@@ -355,7 +377,7 @@ typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs()
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::end_dfs()
+typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::end_dfs() const
 {
     iterator_dfs itr(*this);
     itr.elem = vertexes.end();
@@ -363,7 +385,7 @@ typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::end_dfs()
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs()
+typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs() const
 {
     iterator_bfs itr(*this);
     ++itr;
@@ -371,7 +393,7 @@ typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs()
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::end_bfs()
+typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::end_bfs() const
 {
     iterator_bfs itr(*this);
     itr.elem = vertexes.end();
@@ -379,7 +401,7 @@ typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::end_bfs()
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs(I _id)
+typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs(I _id) const
 {
     direct_vertex_iterator _elem;
     if ((_elem = vertexes.find(_id)) == vertexes.end())
@@ -392,7 +414,7 @@ typename my::graph<I, V, E>::iterator_dfs my::graph<I, V, E>::begin_dfs(I _id)
 }
 
 template<class I, class V, class E>
-typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs(I _id)
+typename my::graph<I, V, E>::iterator_bfs my::graph<I, V, E>::begin_bfs(I _id) const
 {
     direct_vertex_iterator _elem;
     if ((_elem = vertexes.find(_id)) == vertexes.end())

@@ -10,7 +10,7 @@ void my::graph<I, V, E>::iterator_dfs::swap (iterator_dfs &_itr) noexcept
 }
 
 template<class I, class V, class E>
-my::graph<I, V, E>::iterator_dfs::iterator_dfs(graph<I, V, E> &_G):G(_G)
+my::graph<I, V, E>::iterator_dfs::iterator_dfs(graph<I, V, E> const &_G):G(_G)
 {
     direct_vertex_iterator itr = G.ver_begin(), end =G.ver_end();
     for (;itr != end; itr++){
@@ -155,7 +155,7 @@ void my::graph<I, V, E>::iterator_bfs::swap (iterator_bfs &_itr) noexcept
 }
 
 template<class I, class V, class E>
-my::graph<I, V, E>::iterator_bfs::iterator_bfs(graph<I, V, E> &_G):G(_G)
+my::graph<I, V, E>::iterator_bfs::iterator_bfs(graph<I, V, E> const &_G):G(_G)
 {
     direct_vertex_iterator itr = G.ver_begin(), end = G.ver_end();
     for (;itr != end; itr++){

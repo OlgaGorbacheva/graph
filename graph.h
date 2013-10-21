@@ -67,6 +67,9 @@ public:
     std::vector<std::pair<I, V> > getPreviousVertexes(I const &id) const;
     std::vector<std::pair<I, V> > getVertexes() const;
 
+    V const & operator [](I const & id) const;
+    V & operator [](I const & id);
+
     int getVertexesNumber();
 
     void clear();
@@ -78,18 +81,18 @@ public:
     class iterator_dfs;
     class iterator_bfs;
 
-    iterator_dfs begin_dfs();
-    iterator_dfs end_dfs();
-    iterator_bfs begin_bfs();
-    iterator_bfs end_bfs();
+    iterator_dfs begin_dfs() const;
+    iterator_dfs end_dfs() const;
+    iterator_bfs begin_bfs() const ;
+    iterator_bfs end_bfs() const;
 
-    iterator_dfs begin_dfs(I _id);
-    iterator_bfs begin_bfs(I _id);
+    iterator_dfs begin_dfs(I _id) const;
+    iterator_bfs begin_bfs(I _id) const;
 
-    direct_vertex_iterator ver_begin();
-    direct_vertex_iterator ver_end();
-    direct_edge_iterator ed_begin();
-    direct_edge_iterator ed_end();
+    direct_vertex_iterator ver_begin() const;
+    direct_vertex_iterator ver_end() const;
+    direct_edge_iterator ed_begin() const;
+    direct_edge_iterator ed_end() const;
 
 };
 
@@ -144,14 +147,14 @@ private:
     std::unordered_map<I, int> color;
     std::stack<I> passed;
     my::graph<I, V, E>::direct_vertex_iterator elem;
-    my::graph<I, V, E> &G;
+    my::graph<I, V, E> const &G;
 
     void swap(iterator_dfs &_itr) noexcept;
 
 public:
     friend class graph;
 
-    iterator_dfs(my::graph<I, V, E> &_G);
+    iterator_dfs(my::graph<I, V, E> const &_G);
     iterator_dfs(my::graph<I, V, E>::iterator_dfs const &_itr);
     iterator_dfs(my::graph<I, V, E>::iterator_dfs &&_itr) noexcept;
 
@@ -177,14 +180,14 @@ private:
     std::unordered_map<I, int> color;
     std::queue<I> passed;
     my::graph<I, V, E>::direct_vertex_iterator elem;
-    my::graph<I, V, E> &G;
+    my::graph<I, V, E> const &G;
 
     void swap(iterator_bfs &_itr) noexcept;
 
 public:
     friend class graph;
 
-    iterator_bfs(my::graph<I, V, E> &_G);
+    iterator_bfs(my::graph<I, V, E> const &_G);
     iterator_bfs(my::graph<I, V, E>::iterator_bfs const &_itr);
     iterator_bfs(my::graph<I, V, E>::iterator_bfs &&_itr) noexcept;
 
