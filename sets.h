@@ -20,7 +20,7 @@ public:
             throw "set doesn't exist";
         if (elem == sys[elem])
             return elem;
-        return findSet (parent[elem]);
+        return find (sys[elem]);
     }
 
     void merge (T elem1, T elem2) {

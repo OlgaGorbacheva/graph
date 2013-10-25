@@ -14,7 +14,8 @@ HEADERS += \
     graph_algorithm.h \
     Tarjan.hpp \
     Prim.hpp \
-    Kruskal.hpp
+    Kruskal.hpp \
+    sets.h
 
 SOURCES += \
     main.cpp \
