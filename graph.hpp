@@ -152,7 +152,9 @@ std::vector<std::pair<I, E> > my::graph<I, V, E>::getOutEdges(I const &id) const
         for (;er_itr != er_end; er_itr++)
             vertexes.at(id)->rList.erase(*er_itr);
         return result;
-
+//        std::vector<I, E> v;
+////        v.resize(5, std::make_pair(I(), E()));
+//        return v;
     }
     catch(std::out_of_range){
         throw "Vertex doesn't exist";
