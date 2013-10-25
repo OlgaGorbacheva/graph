@@ -252,6 +252,17 @@ std::vector<std::pair<I, V> > my::graph<I, V, E>::getVertexes() const
 }
 
 template<class I, class V, class E>
+std::vector<std::pair<std::pair<I, I>, E>> my::graph<I, V, E>::getEdges() const
+{
+    direct_edge_iterator itr = edges.begin(), end = edges.end();
+    std::vector<std::pair<std::pair<I, I>, E>> result;
+    for (;itr != end; itr++){
+        result.push_back(std::make_pair(itr->first, itr->second->value));
+    }
+    return result;
+}
+
+template<class I, class V, class E>
 void my::graph<I, V, E>::clear()
 {
     vertexes.clear();
