@@ -74,6 +74,8 @@ public:
 
     void clear();
 
+    void merge(my::graph<I, V, E> &G);
+
     friend std::istream& operator >> <I, V, E> (std::istream &cin, graph<I, V, E> &_graph);
 
     friend std::ostream& operator << <I, V, E> (std::ostream &cout, graph<I, V, E> const &_graph);

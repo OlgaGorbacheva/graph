@@ -152,9 +152,6 @@ std::vector<std::pair<I, E> > my::graph<I, V, E>::getOutEdges(I const &id) const
         for (;er_itr != er_end; er_itr++)
             vertexes.at(id)->rList.erase(*er_itr);
         return result;
-//        std::vector<I, E> v;
-////        v.resize(5, std::make_pair(I(), E()));
-//        return v;
     }
     catch(std::out_of_range){
         throw "Vertex doesn't exist";
@@ -259,6 +256,20 @@ void my::graph<I, V, E>::clear()
 {
     vertexes.clear();
     edges.clear();
+}
+
+template<class I, class V, class E>
+void my::graph<I, V, E>::merge(my::graph<I, V, E> &G)
+{
+    for(direct_vertex_iterator v_itr = G.ver_begin(), v_end = G.ver_end(); v_itr != v_end; v_itr++){
+        if (vertexes.find(v_itr->first) != vertexes.end())
+            throw "Vertex has already exist";
+        vertexes.insert(*v_itr);
+    }
+    for(direct_edge_iterator e_itr = G.ed_begin(), e_end = G.ed_end(); e_itr != e_end; e_itr++){
+        edges.insert(*e_itr);
+    }
+    G.clear();
 }
 
 template<class I, class V, class E>
