@@ -66,6 +66,7 @@ public:
     std::vector<std::pair<I, V> > getAccessVertexes(I const &id) const;
     std::vector<std::pair<I, V> > getPreviousVertexes(I const &id) const;
     std::vector<std::pair<I, V> > getVertexes() const;
+    std::vector<std::pair<std::pair<I, I>, E>> getEdges() const;
 
     V const & operator [](I const & id) const;
     V & operator [](I const & id);
