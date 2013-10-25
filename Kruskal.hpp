@@ -13,4 +13,5 @@ my::graph<I, V, E> Kruskal(my::graph<I, V, E> &G)
     std::sort(edges.begin(), edges.end(), [](std::pair<std::pair<I, I>, E> a, std::pair<std::pair<I, I>, E> b){
         return a.second < b.second;
     });
+    for (auto itr = edges.begin(), end = edges.end())
 }
