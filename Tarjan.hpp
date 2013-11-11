@@ -25,7 +25,7 @@ std::vector<std::vector<I> > Tarjan(my::graph<I, V, E> const &G)
             std::vector<std::pair<I, V> > acc_ver = G.getAccessVertexes(itr->getId());
             auto acc_ver_itr = acc_ver.begin(), acc_ver_end = acc_ver.end();
             for (; acc_ver_itr != acc_ver_end; acc_ver_itr++){
-                if (vertexes[itr->getId()].second > vertexes[acc_ver_itr->first].second &&
+                if ((vertexes[itr->getId()].second > vertexes[acc_ver_itr->first].second) &&
                         vertexes[acc_ver_itr->first].second != -1){
                     vertexes[itr->getId()].second = vertexes[acc_ver_itr->first].second;
                 }
@@ -33,6 +33,7 @@ std::vector<std::vector<I> > Tarjan(my::graph<I, V, E> const &G)
             if (vertexes[itr->getId()].second == vertexes[itr->getId()].first){
                 std::vector<I> cur_area;
                 while((*itr).getId() != algo_stack.top()){
+                    vertexes[(*itr).getId()].second = -1;
                     cur_area.push_back(algo_stack.top());
                     algo_stack.pop();
                 }

@@ -67,13 +67,14 @@ public:
     std::vector<std::pair<I, V> > getPreviousVertexes(I const &id) const;
     std::vector<std::pair<I, V> > getVertexes() const;
     std::vector<std::pair<std::pair<I, I>, E>> getEdges() const;
+    int getVertexesNumber() const;
+    bool getEdge(I &out, I &in, std::pair<I, E> &edge) const;
 
     V const & operator [](I const & id) const;
     V & operator [](I const & id);
 
-    int getVertexesNumber();
-
     void clear();
+    bool empty() const;
 
     void merge(my::graph<I, V, E> &G);
 

@@ -263,6 +263,18 @@ std::vector<std::pair<std::pair<I, I>, E>> my::graph<I, V, E>::getEdges() const
 }
 
 template<class I, class V, class E>
+bool my::graph<I, V, E>::getEdge(I &out, I &in, std::pair<I, E> &edge) const
+{
+    direct_edge_iterator itr;
+    if ((itr = edges.find(std::make_pair(out, in))) == edges.end())
+        return false;
+    else {
+        edge = std::make_pair(itr->first.second, itr->second);
+        return true;
+    }
+}
+
+template<class I, class V, class E>
 void my::graph<I, V, E>::clear()
 {
     vertexes.clear();
@@ -281,6 +293,12 @@ void my::graph<I, V, E>::merge(my::graph<I, V, E> &G)
         edges.insert(*e_itr);
     }
     G.clear();
+}
+
+template<class I, class V, class E>
+bool my::graph<I, V, E>::empty() const
+{
+    return vertexes.empty();
 }
 
 template<class I, class V, class E>
@@ -341,7 +359,7 @@ std::ostream& my::operator <<(std::ostream &cout, my::graph<I, V, E> const &_gra
 }
 
 template<class I, class V, class E>
-int my::graph<I, V, E>::getVertexesNumber()
+int my::graph<I, V, E>::getVertexesNumber() const
 {
     return vertexes.size();
 }
